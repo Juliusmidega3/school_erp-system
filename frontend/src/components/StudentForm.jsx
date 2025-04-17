@@ -71,11 +71,17 @@ const StudentForm = ({student, handleChange, handleSubmit }) =>(
          className="w-full mb-4 p-2 border rounded" 
         />
 
-        <select name="gender" value={student.gender} onChange={handleChange} className="w-full mb-4 p-2 border rounded" required >
+        <select
+         name="gender"
+         value={student.gender}
+         onChange={handleChange}
+         required
+        >
             <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select>        
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+        </select>
+               
         <button
          type="submit" 
          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-800 transition" >
