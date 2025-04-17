@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 
-class Students(models.Model):
+class Student(models.Model):
     GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female')
