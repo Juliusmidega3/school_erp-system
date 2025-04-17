@@ -5,13 +5,34 @@ const StudentForm = ({student, handleChange, handleSubmit }) =>(
         <h2 className="text-2xl font-bold text-center mb-6"> Register Students</h2>
         <input
          type="text" 
-         name="name"
-         placeholder="Student Name"
-         value={student.name}
+         name="first_name"
+         placeholder="First Name"
+         value={student.first_name}
          onChange={handleChange}         
          className="w-full mb-4 p-2 border rounded"
          required
         />
+        
+        <input
+         type="text" 
+         name="last_name"
+         placeholder="Last Name"
+         value={student.last_name}
+         onChange={handleChange}         
+         className="w-full mb-4 p-2 border rounded"
+         required
+        />
+
+        <input
+         type="text" 
+         name="class_enrolled"
+         placeholder="Class Enrolled"
+         value={student.class_enrolled}
+         onChange={handleChange}         
+         className="w-full mb-4 p-2 border rounded"
+         required
+        />
+
 
         <input
          type="text"

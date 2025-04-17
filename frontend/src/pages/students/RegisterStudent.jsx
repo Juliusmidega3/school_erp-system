@@ -4,14 +4,19 @@ import api from "../../services/api"
 
 const RegisterStudent = () => {
     const [student, setStudent] = useState({
-        name: "",
+        first_name: "",
+        last_name: "",
         gender: "",
         date_of_birth: "",
         admission_number: "",
+        class_enrolled: "",
         guardian_phone: "",
         guardian_name: ""
     })
     const handleChange = (e) => {
+        setStudent({ ...student, [e.target.name]: e.target.value })
+    }
+    const handleSubmit = (e) => {
         e.preventDefault();
         api.post("students/", student).
         then(
