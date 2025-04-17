@@ -1,10 +1,14 @@
-import StudentList from './features/students/studentsList'
+import React from "react";
+import  { BrowserRouter as Router, Routes, Route} from "react-router-dom"
+import RegisterStudent from "./pages/students/RegisterStudent"
 
 function App (){
-  return(
-    <div className="min-h-screen bg-grey-100">
-      <StudentList/>
-    </div>
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<RegisterStudent/>} />
+      </Routes>
+    </Router>
   )
 }
 
