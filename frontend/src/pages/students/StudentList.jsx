@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../services/api"
 
 const StudentList = () => {
-    const [students, setStudents] = useEffect([]);
+    const [students, setStudents] = useState([]);
 
     useEffect(
         () => {
@@ -13,7 +13,7 @@ const StudentList = () => {
                 console.error("Error fetching the students", err)
             });
         }, []
-    ) 
+    ); 
 
     return (
         <div className="p-8">
