@@ -50,14 +50,14 @@ const StudentForm = ({onSuccess}) => {
                          value={FormData[field]}
                          onChange={handleChange}
                          placeholder={field.replace("_", " ").toUpperCase()}
-                         className="w-full p-2 border rounded"
+                         className="w-3/4 p-2 border rounded mb-3"
                          required
                         />
                     )
                 )
             }
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-    
+            <button type="submit" className="bg-blue-600 hover:bg-blue-800 text-white font-semibold text-center py-2 rounded w-60 mt-2">
+                Register
             </button>
         </form>
     )
