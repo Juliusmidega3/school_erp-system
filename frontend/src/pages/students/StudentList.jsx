@@ -18,7 +18,6 @@ function StudentList() {
     }
   };
 
-  // Call fetchStudents when the component is mounted
   useEffect(() => {
     fetchStudents();
   }, []);
@@ -35,39 +34,37 @@ function StudentList() {
     }
   };
 
-  // Handle form submit for creating or updating a student
+  // Submit form for adding or updating student
   const handleFormSubmit = async (formData, id) => {
     try {
       if (id) {
-        // Update student if there's an ID
         await axios.put(`http://127.0.0.1:8000/api/students/${id}/`, formData);
       } else {
-        // Add new student if there's no ID
         await axios.post("http://127.0.0.1:8000/api/students/", formData);
       }
       fetchStudents();
-      setShowForm(false);
-      setEditStudent(null);
+      setEditStudent(null); // clear edit mode
+      // setShowForm(false); ❌ leave form open after submit
     } catch (error) {
       console.error("Error saving student:", error);
     }
   };
 
-  // Edit an existing student's data
+  // Start editing an existing student
   const handleEdit = (student) => {
     setEditStudent(student);
     setShowForm(true);
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
 
-  // Add a new student (reset the form)
+  // Open the form to add new student
   const handleAddNew = () => {
     setEditStudent(null);
     setShowForm(true);
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
 
-  // Cancel the form (hide it and reset data)
+  // Cancel the form
   const handleCancel = () => {
     setShowForm(false);
     setEditStudent(null);
@@ -150,9 +147,10 @@ function StudentList() {
         {showForm && (
           <div className="mt-10 bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-gray-200">
             <StudentForm
+              key={editStudent ? editStudent.id : Date.now()}
               initialData={editStudent}
               onSubmit={handleFormSubmit}
-              onCancel={handleCancel} // Passing cancel handler here
+              onCancel={handleCancel}
             />
           </div>
         )}
