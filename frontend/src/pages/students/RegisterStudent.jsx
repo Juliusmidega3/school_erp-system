@@ -1,56 +1,45 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import StudentForm from "../../components/StudentForm";
-import api from "../../services/api"
+import axios from "axios";
 
 const RegisterStudent = () => {
-    const [student, setStudent] = useState({
-        first_name: "",
-        last_name: "",
-        gender: "",
-        date_of_birth: "",
-        admission_number: "",
-        class_enrolled: "",
-        guardian_phone: "",
-        guardian_name: ""
-    })
-    const handleChange = (e) => {
-        setStudent({ ...student, [e.target.name]: e.target.value })
-    }
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        api.post("students/", student).
-        then(
-            (res) => {
-                alert("Student registered successfully!");
-                setStudent({
-                  name: "",
-                  gender: "",
-                  date_of_birth: "",
-                  admission_number: "",
-                  guardian_phone: "",
-                  guardian_name: ""
-                });                
-            }
-        ).catch(
-            (err) => {
-                if (err.response) {
-                    alert("Error:" + JSON.stringify(err.response.data));
-                } else {
-                    console.error ("Error:", err.message);
-                }
-            }
-        );
-    };
+  const formRef = useRef();
 
-    return (
-        <div className="flex justify-center mt-10">
-            <StudentForm
-                student={student}
-                handleChange={handleChange}
-                handleSubmit={handleSubmit}
-            />
-        </div>
-    )
-}
+  const handleSubmit = async (formData) => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/students/", formData);
+      console.log("Student registered:", response.data);
+      alert("Student registered successfully!");
+
+      // Reset form after success
+      if (formRef.current) {
+        formRef.current.resetForm();
+      }
+    } catch (error) {
+      console.error("Error registering student", error);
+      if (error.response && error.response.status === 400) {
+        const errorData = error.response.data;
+        const messages = Object.entries(errorData)
+          .map(([field, errors]) => `${field}: ${errors.join(", ")}`)
+          .join("\n");
+        alert("Form submission failed:\n\n" + messages);
+      } else {
+        alert("Unexpected error occurred. Please try again.");
+      }
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="bg-white p-6 rounded-b-lg shadow-md w-1/2">
+        {/* Title */}
+        <h2 className="text-2xl font-semibold text-center mb-4">Register Students</h2>
+        
+        {/* Student Form */}
+        <StudentForm ref={formRef} onSubmit={handleSubmit} />
+      </div>
+    </div>
+  );
+};
 
 export default RegisterStudent;
