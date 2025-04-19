@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import StudentForm from "../../components/StudentForm";
-import StudentTable from "../../components/StudentTable";
+import StudentForm from "./StudentForm";
+import StudentTable from "./StudentTable";
 
 const RegisterStudent = () => {
   const [students, setStudents] = useState([]);

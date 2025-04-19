@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import StudentForm from "../../components/StudentForm";
-import logo from "../../assets/faulu-logo.png";
+import StudentForm from "./StudentForm";
+import LogoText from "../../components/LogoText";
 
 function StudentList() {
   const [students, setStudents] = useState([]);
@@ -72,13 +72,7 @@ function StudentList() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-gray-800 font-sans">
-      <div className="flex items-center gap-4 px-6 py-4 shadow bg-white">
-        <img src={logo} alt="Faulu School Logo" className="h-12 w-12 object-contain" />
-        <h1 className="text-3xl font-bold text-[#065f46]">
-          Faulu School Management System
-        </h1>
-      </div>
-
+      <LogoText/>
       <div className="px-6 py-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold text-[#065f46]">Student List</h2>
