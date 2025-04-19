@@ -1,10 +1,53 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    navigate("/");
+  };
+
   return (
-    <div className="p-10">
-      <h1 className="text-3xl font-bold text-[#065f46]">Welcome to the Admin Dashboard</h1>
-      <p className="mt-4 text-gray-700">From here, you can manage teachers, students, and more.</p>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8">
+      <h1 className="text-3xl font-bold mb-6 text-[#065f46]">
+        Welcome, Admin 👋
+      </h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+        <Link
+          to="/students"
+          className="bg-white shadow p-6 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
+        >
+          📚 View Students
+        </Link>
+        <Link
+          to="/students/register"
+          className="bg-white shadow p-6 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
+        >
+          ➕ Register Student
+        </Link>
+        <Link
+          to="/teachers"
+          className="bg-white shadow p-6 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
+        >
+          👩‍🏫 View Teachers
+        </Link>
+        <Link
+          to="/teachers/register"
+          className="bg-white shadow p-6 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
+        >
+          ➕ Register Teacher
+        </Link>
+      </div>
+
+      <button
+        onClick={handleLogout}
+        className="mt-8 bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition"
+      >
+        Logout
+      </button>
     </div>
   );
 }

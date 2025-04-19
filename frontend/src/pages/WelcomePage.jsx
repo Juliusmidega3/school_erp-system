@@ -3,23 +3,30 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/faulu-logo.png";
 
 function WelcomePage() {
-  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Dummy login logic for now
-    if (username === "admin" && password === "admin123") {
+    // Example credentials for demo
+    const adminUsername = "admin";
+    const adminPassword = "admin123";
+
+    if (username === adminUsername && password === adminPassword) {
+      // Save token (you can customize this part with real auth)
+      localStorage.setItem("adminToken", "demo-auth-token");
       navigate("/dashboard");
     } else {
-      alert("Invalid login credentials!");
+      setError("Invalid username or password");
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
+      {/* Logo */}
       <div className="mb-10">
         <img
           src={logo}
@@ -28,18 +35,18 @@ function WelcomePage() {
         />
       </div>
 
+      {/* Login Form */}
       <div className="w-full max-w-md bg-white shadow-md rounded-lg p-8">
         <h2 className="text-2xl font-semibold text-center mb-6 text-[#065f46]">
           Admin Sign In
         </h2>
 
+        {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+
         <form className="space-y-4" onSubmit={handleLogin}>
           <div>
-            <label htmlFor="username" className="block text-gray-700 mb-1">
-              Username
-            </label>
+            <label className="block text-gray-700 mb-1">Username</label>
             <input
-              id="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -49,11 +56,8 @@ function WelcomePage() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-gray-700 mb-1">
-              Password
-            </label>
+            <label className="block text-gray-700 mb-1">Password</label>
             <input
-              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

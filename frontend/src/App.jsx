@@ -1,42 +1,70 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Students
+// Pages
 import RegisterStudent from "./pages/students/RegisterStudent";
 import StudentList from "./pages/students/StudentList";
-
-// Teachers
 import RegisterTeacher from "./pages/teachers/RegisterTeacher";
 import TeacherList from "./pages/teachers/TeacherList";
-
-// Auth Pages
-import WelcomePage from "./pages/WelcomePage"; // Admin login
-import RegisterPage from "./pages/RegisterPage"; // Admin registration
-
-// Dashboard
+import WelcomePage from "./pages/WelcomePage";
+import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
+
+// Route Guard
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
     <Router>
       <div className="p-4">
         <Routes>
-          {/* Authentication */}
+          {/* Public Routes */}
           <Route path="/" element={<WelcomePage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          {/* Dashboard */}
-          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Protected Routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/students"
+            element={
+              <PrivateRoute>
+                <StudentList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/students/register"
+            element={
+              <PrivateRoute>
+                <RegisterStudent />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/teachers"
+            element={
+              <PrivateRoute>
+                <TeacherList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/teachers/register"
+            element={
+              <PrivateRoute>
+                <RegisterTeacher />
+              </PrivateRoute>
+            }
+          />
 
-          {/* Students */}
-          <Route path="/students" element={<StudentList />} />
-          <Route path="/students/register" element={<RegisterStudent />} />
-
-          {/* Teachers */}
-          <Route path="/teachers" element={<TeacherList />} />
-          <Route path="/teachers/register" element={<RegisterTeacher />} />
-
-          {/* 404 Fallback */}
+          {/* 404 fallback */}
           <Route path="*" element={<div>404 - Page Not Found</div>} />
         </Routes>
       </div>
