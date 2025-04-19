@@ -4,13 +4,14 @@ import RegisterStudent from "./pages/students/RegisterStudent";
 import StudentList from "./pages/students/StudentList";
 import RegisterTeacher from "./pages/teachers/RegisterTeacher";
 import TeacherList from "./pages/teachers/TeacherList";
+import WelcomePage from "./pages/WelcomePage"; // ✅ Import new page
 
 function App() {
   return (
     <Router>
       <div className="p-4">
         <Routes>
-          <Route path="/" element={<TeacherList />} />
+          <Route path="/" element={<WelcomePage />} /> {/* ✅ Home Route */}
           <Route path="/teachers" element={<TeacherList />} />
           <Route path="/teachers/register" element={<RegisterTeacher />} />
           <Route path="/students" element={<StudentList />} />
