@@ -140,8 +140,8 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
             <input
               type="date"
               id="date_of_birth"
-              name="date_of_birth"
-              value={formData.date_of_birth}
+              name="date_of_employment"
+              value={formData.date_of_employment}
               onChange={handleChange}
               required
               className="border p-2 rounded-md w-full"

@@ -106,12 +106,12 @@ function TeacherList() {
                   <td className="py-2 px-4">
                     {s.first_name} {s.last_name}
                   </td>
-                  <td className="py-2 px-4">{s.gender}</td>
-                  <td className="py-2 px-4">{s.email}</td>
-                  <td className="py-2 px-4">{s.phone_number}</td>
-                  <td className="py-2 px-4">{s.marital_status}</td>
-                  <td className="py-2 px-4">{s.date_of_birth}</td>
-                  <td className="py-2 px-4">{s.date_of_employment}</td>
+                  <td className="py-2 px-4 text-center">{s.gender}</td>
+                  <td className="py-2 px-4 text-center">{s.email}</td>
+                  <td className="py-2 px-4 text-center">{s.phone_number}</td>
+                  <td className="py-2 px-4 text-center">{s.marital_status}</td>
+                  <td className="py-2 px-4 text-center">{s.marital_status}</td>
+                  <td className="py-2 px-4 text-center">{s.date_of_employment}</td>
 
                   <td className="py-2 px-4 space-x-2 text-center">
                     <button
