@@ -1,15 +1,16 @@
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 
-const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
+const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     gender: "",
+    email: "",
+    phone_number: "",
+    marital_status: "",
     date_of_birth: "",
-    admission_number: "",
-    class_enrolled: "",
-    guardian_name: "",
-    guardian_phone: "",
+    date_of_employment: "",
+    
   });
 
   // Populate form if editing
@@ -25,11 +26,11 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
         first_name: "",
         last_name: "",
         gender: "",
+        email: "",
+        phone_number: "",
+        marital_status: "",
         date_of_birth: "",
-        admission_number: "",
-        class_enrolled: "",
-        guardian_name: "",
-        guardian_phone: "",
+        date_of_employment: "",
       });
     },
   }));
@@ -47,7 +48,7 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto">
       <h3 className="text-xl font-semibold mb-4 text-[#065f46]">
-        {initialData ? "Edit the Student" : "Register New Student"}
+        {initialData ? "Edit the Teacher" : "Register New Teacher"}
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -81,52 +82,75 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           <option value="">Select Gender</option>
           <option value="M">Male</option>
           <option value="F">Female</option>
+          <option value="O">Other</option>
         </select>
 
         <input
-          type="date"
-          name="date_of_birth"
-          value={formData.date_of_birth}
+          type="email"
+          name="email"
+          placeholder="Enter your Email"
+          value={formData.email}
           onChange={handleChange}
           required
           className="border p-2 rounded-md"
         />
+
         <input
           type="text"
-          name="admission_number"
-          placeholder="Admission No."
-          value={formData.admission_number}
+          name="phone_number"
+          placeholder="Phone Number"
+          value={formData.phone_number}
           onChange={handleChange}
           required
           className="border p-2 rounded-md"
         />
-        <input
-          type="text"
-          name="class_enrolled"
-          placeholder="Class"
-          value={formData.class_enrolled}
+
+       
+       <select
+          name="marital_status"
+          value={formData.marital_status}
           onChange={handleChange}
           required
           className="border p-2 rounded-md"
-        />
-        <input
-          type="text"
-          name="guardian_name"
-          placeholder="Guardian Name"
-          value={formData.guardian_name}
-          onChange={handleChange}
-          required
-          className="border p-2 rounded-md"
-        />
-        <input
-          type="text"
-          name="guardian_phone"
-          placeholder="Guardian Phone"
-          value={formData.guardian_phone}
-          onChange={handleChange}
-          required
-          className="border p-2 rounded-md"
-        />
+        >
+          <option value="">Marital Status</option>
+          <option value="S">Single</option>
+          <option value="M">Maried</option> 
+        </select>  
+
+        <div>
+            <label className="block mb-1 text-sm text-gray-700" htmlFor="date_of_birth">
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              id="date_of_birth"
+              name="date_of_birth"
+              value={formData.date_of_birth}
+              onChange={handleChange}
+              required
+              className="border p-2 rounded-md w-full"
+            />
+        </div>
+
+        <div>
+            <label className="block mb-1 text-sm text-gray-700" htmlFor="date_of_birth">
+              Date of Employment
+            </label>
+            <input
+              type="date"
+              id="date_of_birth"
+              name="date_of_birth"
+              value={formData.date_of_birth}
+              onChange={handleChange}
+              required
+              className="border p-2 rounded-md w-full"
+            />
+        </div>
+
+
+       
+        
       </div>
 
       <div className="mt-4 flex justify-end gap-4">
@@ -148,4 +172,4 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   );
 });
 
-export default StudentForm;
+export default TeacherForm;
