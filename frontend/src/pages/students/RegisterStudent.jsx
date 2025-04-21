@@ -56,12 +56,14 @@ const RegisterStudent = () => {
       } else {
         await axiosInstance.post("/students/", formData);
       }
-      fetchStaffs();
-      setEditStaff(null);
+      fetchStudents();
+      setEditStudent(null);
+      setShowForm(false);
     } catch (error) {
-      console.error("Error saving staff:", error);
+      console.error("Error saving student:", error);
     }
   };
+  
   return (
     <div>       
       <LogoText  />  

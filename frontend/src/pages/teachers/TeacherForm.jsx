@@ -2,6 +2,8 @@ import React, { forwardRef, useImperativeHandle, useState, useEffect } from "rea
 
 const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   const [formData, setFormData] = useState({
+    username: "",
+    password: "",
     first_name: "",
     last_name: "",
     gender: "",
@@ -23,6 +25,8 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   useImperativeHandle(ref, () => ({
     resetForm() {
       setFormData({
+        username: "",
+        password: "",
         first_name: "",
         last_name: "",
         gender: "",
@@ -52,6 +56,25 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded-md"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required={!initialData}
+          className="border p-2 rounded-md"
+        />
+
         <input
           type="text"
           name="first_name"

@@ -2,6 +2,8 @@ import React, { forwardRef, useImperativeHandle, useState, useEffect } from "rea
 
 const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   const [formData, setFormData] = useState({
+    username: "",
+    password: "",
     first_name: "",
     last_name: "",
     gender: "",
@@ -15,13 +17,19 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   // Populate form if editing
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
+      setFormData(prev => ({
+        ...prev,
+        ...initialData,
+        password: "", // Do not auto-fill password when editing
+      }));
     }
   }, [initialData]);
 
   useImperativeHandle(ref, () => ({
     resetForm() {
       setFormData({
+        username: "",
+        password: "",
         first_name: "",
         last_name: "",
         gender: "",
@@ -53,6 +61,25 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
           type="text"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded-md"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required={!initialData}
+          className="border p-2 rounded-md"
+        />
+
+        <input
+          type="text"
           name="first_name"
           placeholder="First Name"
           value={formData.first_name}
@@ -69,8 +96,7 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           required
           className="border p-2 rounded-md"
         />
-        
-        {/* Gender select dropdown with only Male and Female options */}
+
         <select
           name="gender"
           value={formData.gender}
@@ -119,7 +145,6 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           <option value="Grade 7">Grade 7</option>
           <option value="Grade 8">Grade 8</option>
           <option value="Grade 9">Grade 9</option>
-
         </select>
 
         <input
@@ -144,14 +169,14 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
 
       <div className="mt-4 flex justify-end gap-4">
         <button
-          onClick={onCancel} // Ensure cancel does not trigger submit
-          type="button" // Ensure it's not a form submit button
+          onClick={onCancel}
+          type="button"
           className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
         >
           Cancel
         </button>
         <button
-          type="submit" // This triggers the form submit
+          type="submit"
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           {initialData ? "Update" : "Submit"}

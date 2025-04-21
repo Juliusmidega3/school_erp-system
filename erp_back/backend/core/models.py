@@ -1,8 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
-
 class Student(models.Model):
     GENDER_CHOICES = [
         ('Male', 'Male'),
@@ -20,22 +17,26 @@ class Student(models.Model):
         ('Grade 6', 'Grade 6'),        
         ('Grade 7', 'Grade 7'),        
         ('Grade 8', 'Grade 8'),        
-        ('Grade 8', 'Grade 9'),        
+        ('Grade 9', 'Grade 9'),        
     ] 
-    
+
+    # Added default value for username to allow migration
+    username = models.CharField(max_length=50, unique=True, default='default_username')
+    password = models.CharField(max_length=100, default='1234')  # Default password value added
+
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    gender = models.CharField(max_length=10, choices = GENDER_CHOICES)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     date_of_birth = models.DateField()
     admission_number = models.CharField(max_length=50, unique=True)
     admission_date = models.DateField(auto_now_add=True)
-    class_enrolled = models.CharField(max_length=10, choices = CLASS_CHOICES)
+    class_enrolled = models.CharField(max_length=10, choices=CLASS_CHOICES)
     guardian_name = models.CharField(max_length=100)
     guardian_phone = models.CharField(max_length=15)
     
     def __str__(self):
-        return f"{self.first_name}{self.last_name}"
-    
+        return f"{self.first_name} {self.last_name}"
+
 class Teacher(models.Model):
     GENDER_CHOICES = [
         ('Male', 'Male'),
@@ -48,7 +49,9 @@ class Teacher(models.Model):
         ('Married', 'Married'),        
     ]   
 
-    
+    username = models.CharField(max_length=50, unique=True, default='default_teacher_username')
+    password = models.CharField(max_length=100, default='1234')
+
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField()    
@@ -59,8 +62,8 @@ class Teacher(models.Model):
     date_of_employment = models.DateField()
     
     def __str__(self):
-        return f"{self.first_name}{self.last_name}"
-    
+        return f"{self.first_name} {self.last_name}"
+
 class Staff(models.Model):
     GENDER_CHOICES = [
         ('Male', 'Male'),
@@ -81,10 +84,8 @@ class Staff(models.Model):
         ('Lab_Technician', 'Lab_Technician'),
         ('Nurse', 'Nurse'),
         ('Social_Media_Manager', 'Social_Media_Manager'),
-       
     ] 
 
-    
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField()    
@@ -95,5 +96,4 @@ class Staff(models.Model):
     date_of_employment = models.DateField()
     
     def __str__(self):
-        return f"{self.first_name}{self.last_name}"
-    
+        return f"{self.first_name} {self.last_name}"

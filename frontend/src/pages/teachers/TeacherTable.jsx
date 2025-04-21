@@ -8,6 +8,7 @@ const TeacherTable = ({ teachers, onEdit, onDelete }) => {
         <thead>
           <tr className="bg-gray-200">
             <th className="border px-3 py-2">#</th>
+            <th className="border px-3 py-2">Username</th>
             <th className="border px-3 py-2">Name</th>
             <th className="border px-3 py-2">Gender</th>
             <th className="border px-3 py-2">Email</th>
@@ -23,6 +24,7 @@ const TeacherTable = ({ teachers, onEdit, onDelete }) => {
             teachers.map((teacher, i) => (
               <tr key={teacher.id}>
                 <td className="border px-2 py-1 text-center">{i + 1}</td>
+                <td className="border px-2 py-1 text-center">{teacher.user?.username || "-"}</td>                
                 <td className="border px-2 py-1">{teacher.first_name} {teacher.last_name}</td>
                 <td className="border px-2 py-1">{teacher.gender}</td>
                 <td className="border px-2 py-1">{teacher.email}</td>

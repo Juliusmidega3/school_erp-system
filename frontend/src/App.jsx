@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+// Pages
 import RegisterStudent from "./pages/students/RegisterStudent";
 import StudentList from "./pages/students/StudentList";
 import RegisterTeacher from "./pages/teachers/RegisterTeacher";
@@ -10,7 +11,12 @@ import StaffList from "./pages/staff/StaffList";
 import WelcomePage from "./pages/WelcomePage";
 import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
+import Announcements from "./pages/announcements/Announcements";
+import TeacherLogin from "./pages/teachers/TeacherLogin";
+import StudentLogin from "./pages/students/StudentLogin";
+import TeacherDashboard from "./pages/teachers/TeacherDashboard";
 
+// Components
 import PrivateRoute from "./components/PrivateRoute";
 import MainLayout from "./components/MainLayout";
 
@@ -21,6 +27,8 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<WelcomePage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/student-login" element={<StudentLogin />} />
+        <Route path="/teacher-login" element={<TeacherLogin />} />
 
         {/* Protected Routes */}
         <Route
@@ -93,8 +101,28 @@ function App() {
             </PrivateRoute>
           }
         />
+        
+        <Route
+          path="/teacher-dashboard"
+          element={
+            <PrivateRoute>
+              <MainLayout>
+                <TeacherDashboard />
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
 
-        {/* TODO: Add /announcements and /calendar route soon */}
+        <Route
+          path="/announcements"
+          element={
+            <PrivateRoute>
+              <MainLayout>
+                <Announcements />
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
 
         {/* 404 fallback */}
         <Route path="*" element={<div className="p-6">404 - Page Not Found</div>} />

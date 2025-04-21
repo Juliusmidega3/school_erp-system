@@ -6,12 +6,20 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
+        extra_kwargs = {
+            'username': {'required': True},
+            'password': {'write_only': True}
+        }
 
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = '__all__'
-        
+        extra_kwargs = {
+            'username': {'required': True},
+            'password': {'write_only': True}
+        }
+
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff

@@ -10,7 +10,14 @@ const axiosInstance = axios.create({
 // Automatically add token to all requests
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("adminToken");
+    // First check for the admin token
+    let token = localStorage.getItem("adminToken");
+    // If no admin token, check for teacher token
+    if (!token) {
+      token = localStorage.getItem("teacherToken");
+    }
+    
+    // If a token is found, add it to the request headers
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

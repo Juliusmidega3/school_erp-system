@@ -11,15 +11,17 @@ const RegisterTeacher = () => {
   const formRef = useRef();
 
   const fetchTeachers = async () => {
-    const res = await axiosInstance.get("/teachers/");
-    setTeachers(res.data);
+    try {
+      const res = await axiosInstance.get("/teachers/");
+      setTeachers(res.data);
+    } catch (error) {
+      console.error("Error fetching teachers:", error);
+    }
   };
-
 
   useEffect(() => {
     fetchTeachers();
   }, []);
-
 
   const handleEdit = (teacher) => {
     setEditTeacher(teacher);
@@ -30,10 +32,10 @@ const RegisterTeacher = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this teacher?")) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/teachers/${id}/`);
+        await axiosInstance.delete(`/teachers/${id}/`);
         fetchTeachers();
       } catch (error) {
-        console.error("Error deleting Teacher:", error);
+        console.error("Error deleting teacher:", error);
       }
     }
   };
@@ -56,16 +58,17 @@ const RegisterTeacher = () => {
       } else {
         await axiosInstance.post("/teachers/", formData);
       }
-      fetchStaffs();
-      setEditStaff(null);
+      fetchTeachers();
+      setEditTeacher(null);
+      setShowForm(false);
     } catch (error) {
-      console.error("Error saving staff:", error);
+      console.error("Error saving teacher:", error);
     }
   };
 
   return (
-    <div>       
-      <LogoText  />  
+    <div>
+      <LogoText />
       {showForm && (
         <div className="mt-10 bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-gray-200">
           <TeacherForm
@@ -75,12 +78,21 @@ const RegisterTeacher = () => {
             onCancel={handleCancel}
           />
         </div>
-      )} 
+      )}
       <div className="flex justify-between mt-3 items-center">
-        <h2 className="text-xl font-bold  ">Teacher List</h2>
-        <button onClick={handleAddNew} className="bg-white shadow p-3 rounded-lg hover:shadow-lg transition border border-gray-200 text-center">➕ Hire a Teacher</button> 
-      </div>  
-      <TeacherTable teachers={teachers} onEdit={handleEdit} onDelete={handleDelete} />
+        <h2 className="text-xl font-bold">Teacher List</h2>
+        <button
+          onClick={handleAddNew}
+          className="bg-white shadow p-3 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
+        >
+          ➕ Hire a Teacher
+        </button>
+      </div>
+      <TeacherTable
+        teachers={teachers}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };
