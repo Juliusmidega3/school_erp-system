@@ -1,94 +1,104 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Pages
 import RegisterStudent from "./pages/students/RegisterStudent";
 import StudentList from "./pages/students/StudentList";
 import RegisterTeacher from "./pages/teachers/RegisterTeacher";
 import TeacherList from "./pages/teachers/TeacherList";
-import RegisterForm from "./pages/staff/RegisterStaff"
-import StaffList from "./pages/staff/StaffList"
+import RegisterStaff from "./pages/staff/RegisterStaff";
+import StaffList from "./pages/staff/StaffList";
 import WelcomePage from "./pages/WelcomePage";
 import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
 
-// Route Guard
 import PrivateRoute from "./components/PrivateRoute";
-import RegisterStaff from "./pages/staff/RegisterStaff";
+import MainLayout from "./components/MainLayout";
 
 function App() {
   return (
     <Router>
-      <div className="p-4">
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<WelcomePage />} />
-          <Route path="/register" element={<RegisterPage />} />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-          {/* Protected Routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
+        {/* Protected Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <MainLayout>
                 <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/students"
-            element={
-              <PrivateRoute>
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/students"
+          element={
+            <PrivateRoute>
+              <MainLayout>
                 <StudentList />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/students/register"
-            element={
-              <PrivateRoute>
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/students/register"
+          element={
+            <PrivateRoute>
+              <MainLayout>
                 <RegisterStudent />
-              </PrivateRoute>
-            }
-          />
-          
-          <Route
-            path="/teachers"
-            element={
-              <PrivateRoute>
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teachers"
+          element={
+            <PrivateRoute>
+              <MainLayout>
                 <TeacherList />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/teachers/register"
-            element={
-              <PrivateRoute>
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teachers/register"
+          element={
+            <PrivateRoute>
+              <MainLayout>
                 <RegisterTeacher />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/staffs"
-            element={
-              <PrivateRoute>
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/staffs"
+          element={
+            <PrivateRoute>
+              <MainLayout>
                 <StaffList />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/staffs/register"
-            element={
-              <PrivateRoute>
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/staffs/register"
+          element={
+            <PrivateRoute>
+              <MainLayout>
                 <RegisterStaff />
-              </PrivateRoute>
-            }
-          />
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
 
-          {/* 404 fallback */}
-          <Route path="*" element={<div>404 - Page Not Found</div>} />
-        </Routes>
-      </div>
+        {/* TODO: Add /announcements and /calendar route soon */}
+
+        {/* 404 fallback */}
+        <Route path="*" element={<div className="p-6">404 - Page Not Found</div>} />
+      </Routes>
     </Router>
   );
 }

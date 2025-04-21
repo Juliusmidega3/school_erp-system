@@ -1,36 +1,50 @@
-import { Link, useLocation } from 'react-router-dom';
-import { Home, Users, UserPlus, Book, ClipboardList, GraduationCap } from 'lucide-react';
+import React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import LogoText from "./LogoText";
 
 const Sidebar = () => {
-  const location = useLocation();
+  const navigate = useNavigate();
 
-  const menuItems = [
-    { name: 'Dashboard', icon: <Home size={18} />, path: '/' },
-    { name: 'Students', icon: <Users size={18} />, path: '/students' },
-    { name: 'Teachers', icon: <UserPlus size={18} />, path: '/teachers' },
-    { name: 'Classes', icon: <Book size={18} />, path: '/classes' },
-    { name: 'Subjects', icon: <ClipboardList size={18} />, path: '/subjects' },
-    { name: 'Exams', icon: <GraduationCap size={18} />, path: '/exams' },
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    navigate("/");
+  };
+
+  const links = [
+    { to: "/dashboard", label: "🏠 Dashboard" },
+    { to: "/students", label: "📚 Students" },
+    { to: "/teachers", label: "👩‍🏫 Teachers" },
+    { to: "/staffs", label: "🧑‍💼 Staff" },
+    { to: "/announcements", label: "📢 Announcements" },
+    { to: "/calendar", label: "🗓️ Calendar" },
   ];
 
   return (
-    <div className="w-64 h-screen bg-blue-900 text-white shadow-md fixed top-0 left-0 p-4">
-      <h1 className="text-2xl font-bold mb-6 text-center">Faulu School</h1>
-      <ul className="space-y-2">
-        {menuItems.map((item) => (
-          <li key={item.name}>
-            <Link
-              to={item.path}
-              className={`flex items-center p-2 rounded-md hover:bg-blue-700 transition-all ${
-                location.pathname === item.path ? 'bg-blue-700' : ''
-              }`}
-            >
-              <span className="mr-3">{item.icon}</span>
-              {item.name}
-            </Link>
-          </li>
+    <div className="h-screen w-64 bg-white shadow-md border-r border-gray-200 p-4 fixed top-0 left-0 z-10">
+      <LogoText />
+      <nav className="mt-8 space-y-4">
+        {links.map(({ to, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) =>
+              `block px-4 py-2 rounded-lg font-medium transition ${
+                isActive
+                  ? "bg-[#065f46] text-white"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`
+            }
+          >
+            {label}
+          </NavLink>
         ))}
-      </ul>
+        <button
+          onClick={handleLogout}
+          className="block w-full text-left px-4 py-2 mt-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+        >
+          🚪 Logout
+        </button>
+      </nav>
     </div>
   );
 };
