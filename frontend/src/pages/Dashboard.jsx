@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import LogoText from "../components/LogoText";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -10,7 +11,10 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8">
+    <>
+      <LogoText/>
+
+      <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8">
       <h1 className="text-3xl font-bold mb-6 text-[#065f46]">
         Welcome, Admin 👋
       </h1>
@@ -23,22 +27,16 @@ function Dashboard() {
           📚 View Students
         </Link>
         <Link
-          to="/students/register"
-          className="bg-white shadow p-6 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
-        >
-          ➕ Register Student
-        </Link>
-        <Link
           to="/teachers"
           className="bg-white shadow p-6 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
         >
           👩‍🏫 View Teachers
         </Link>
         <Link
-          to="/teachers/register"
+          to="/staffs"
           className="bg-white shadow p-6 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
         >
-          ➕ Register Teacher
+          👩‍🏫 View Staff
         </Link>
       </div>
 
@@ -49,6 +47,7 @@ function Dashboard() {
         Logout
       </button>
     </div>
+    </>
   );
 }
 

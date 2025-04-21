@@ -48,7 +48,7 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto">
       <h3 className="text-xl font-semibold mb-4 text-[#065f46]">
-        {initialData ? "Edit the Teacher" : "Register New Teacher"}
+        {initialData ? "Edit the Teacher" : "Hire"}
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -80,9 +80,9 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           className="border p-2 rounded-md"
         >
           <option value="">Select Gender</option>
-          <option value="M">Male</option>
-          <option value="F">Female</option>
-          <option value="O">Other</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
         </select>
 
         <input
@@ -114,8 +114,8 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           className="border p-2 rounded-md"
         >
           <option value="">Marital Status</option>
-          <option value="S">Single</option>
-          <option value="M">Maried</option> 
+          <option value="Single">Single</option>
+          <option value="Married">Married</option> 
         </select>  
 
         <div>
@@ -147,13 +147,11 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
               className="border p-2 rounded-md w-full"
             />
         </div>
-
-
-       
+ 
         
       </div>
 
-      <div className="mt-4 flex justify-end gap-4">
+      <div className="mt-4 flex justify-between gap-4">
         <button
           onClick={onCancel} // Ensure cancel does not trigger submit
           type="button" // Ensure it's not a form submit button

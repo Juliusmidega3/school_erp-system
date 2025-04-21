@@ -3,21 +3,21 @@ import axios from "axios";
 import LogoText from "../../components/LogoText";
 import { Link, useNavigate } from "react-router-dom";
 
-function StudentList() {
-  const [students, setStudents] = useState([]);
+function StaffList() {
+  const [staffs, setStaffs] = useState([]); 
 
-  // Fetch students from the API
-  const fetchStudents = async () => {
+  // Fetch staffs from the API
+  const fetchStaffs = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/students/");
-      setStudents(res.data);
+      const res = await axios.get("http://127.0.0.1:8000/api/staffs/");
+      setStaffs(res.data);
     } catch (err) {
-      console.error("Error fetching students:", err);
+      console.error("Error fetching staffs:", err);
     }
   };
 
   useEffect(() => {
-    fetchStudents();
+    fetchStaffs();
   }, []);
 
   return (
@@ -25,8 +25,8 @@ function StudentList() {
       <LogoText/>
       <div className="px-6 py-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-[#065f46]">Student's List</h2>
-          <Link to="/students/register" className="bg-white shadow p-3 rounded-lg hover:shadow-lg transition border border-gray-200 text-center">➕</Link>
+          <h2 className="text-2xl font-semibold text-[#065f46]">Staff's List</h2>
+          <Link to="/staffs/register" className="bg-white shadow p-3 rounded-lg hover:shadow-lg transition border border-gray-200 text-center">➕</Link>
 
         </div>
 
@@ -36,40 +36,42 @@ function StudentList() {
               <th className="py-2 px-4">#</th>
               <th className="py-2 px-4">Name</th>
               <th className="py-2 px-4">Gender</th>
-              <th className="py-2 px-4">DOB</th>
-              <th className="py-2 px-4">Class</th>
-              <th className="py-2 px-4">Guardian</th>
-              <th className="py-2 px-4">Phone</th>
-              <th className="py-2 px-4">Admission No.</th>
+              <th className="py-2 px-4">Email</th>
+              <th className="py-2 px-4">Phone Number</th>
+              <th className="py-2 px-4">Marital Status</th>
+              <th className="py-2 px-4">Role</th>
+              <th className="py-2 px-4">Date Employed.</th>             
             </tr>
           </thead>
           <tbody>
-            {students.length ? (
-              students.map((s, index) => (
+            {staffs.length ? (
+              staffs.map((s, index) => (
                 <tr key={s.id} className="border-b hover:bg-gray-50">
                   <td className="py-2 px-4">{index + 1}</td>
                   <td className="py-2 px-4">
                     {s.first_name} {s.last_name}
                   </td>
                   <td className="py-2 px-4 text-center">{s.gender}</td>
-                  <td className="py-2 px-4 text-center">{s.date_of_birth}</td>
-                  <td className="py-2 px-4 text-center">{s.class_enrolled}</td>
-                  <td className="py-2 px-4 text-center">{s.guardian_name}</td>
-                  <td className="py-2 px-4 text-center">{s.guardian_phone}</td>
-                  <td className="py-2 px-4 text-center">{s.admission_number}</td>
+                  <td className="py-2 px-4 text-center">{s.email}</td>
+                  <td className="py-2 px-4 text-center">{s.phone_number}</td>
+                  <td className="py-2 px-4 text-center">{s.marital_status}</td>
+                  <td className="py-2 px-4 text-center">{s.role}</td>
+                  <td className="py-2 px-4 text-center">{s.date_of_employment}</td>
                 </tr>
               ))
             ) : (
               <tr>
                 <td colSpan="9" className="text-center py-3">
-                  No students found.
+                  No staffs found.
                 </td>
               </tr>
             )}
           </tbody>
-        </table>
+        </table> 
       </div>
+      
     </div>
   );
 }
-export default StudentList;
+
+export default StaffList;

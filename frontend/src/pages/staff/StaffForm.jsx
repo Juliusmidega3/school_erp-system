@@ -1,15 +1,16 @@
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 
-const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
+const StaffForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     gender: "",
-    date_of_birth: "",
-    admission_number: "",
-    class_enrolled: "",
-    guardian_name: "",
-    guardian_phone: "",
+    email: "",
+    phone_number: "",
+    marital_status: "",
+    role: "",
+    date_of_employment: "",
+    
   });
 
   // Populate form if editing
@@ -25,11 +26,11 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
         first_name: "",
         last_name: "",
         gender: "",
-        date_of_birth: "",
-        admission_number: "",
-        class_enrolled: "",
-        guardian_name: "",
-        guardian_phone: "",
+        email: "",
+        phone_number: "",
+        marital_status: "",
+        role: "",
+        date_of_employment: "",
       });
     },
   }));
@@ -47,7 +48,7 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto">
       <h3 className="text-xl font-semibold mb-4 text-[#065f46]">
-        {initialData ? "Edit the Student" : "Register New Student"}
+        {initialData ? "Edit the Staff" : "Hire"}
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -81,68 +82,80 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           <option value="">Select Gender</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
+          <option value="Other">Other</option>
         </select>
 
         <input
-          type="date"
-          name="date_of_birth"
-          value={formData.date_of_birth}
+          type="email"
+          name="email"
+          placeholder="Enter your Email"
+          value={formData.email}
           onChange={handleChange}
           required
           className="border p-2 rounded-md"
         />
+
         <input
           type="text"
-          name="admission_number"
-          placeholder="Admission No."
-          value={formData.admission_number}
+          name="phone_number"
+          placeholder="Phone Number"
+          value={formData.phone_number}
           onChange={handleChange}
           required
           className="border p-2 rounded-md"
         />
-        <select
-          name="class_enrolled"
-          value={formData.class_enrolled}
+
+       
+       <select
+          name="marital_status"
+          value={formData.marital_status}
           onChange={handleChange}
           required
           className="border p-2 rounded-md"
         >
-          <option value="">Class Enrolled</option>
-          <option value="PP 1">PP 1</option>
-          <option value="PP 2">PP 2</option>
-          <option value="Grade 1">Grade 1</option>
-          <option value="Grade 2">Grade 2</option>
-          <option value="Grade 3">Grade 3</option>
-          <option value="Grade 4">Grade 4</option>
-          <option value="Grade 5">Grade 5</option>
-          <option value="Grade 6">Grade 6</option>
-          <option value="Grade 7">Grade 7</option>
-          <option value="Grade 8">Grade 8</option>
-          <option value="Grade 9">Grade 9</option>
+          <option value="">Marital Status</option>
+          <option value="Single">Single</option>
+          <option value="Married">Married</option> 
+        </select>  
 
-        </select>
-
-        <input
-          type="text"
-          name="guardian_name"
-          placeholder="Guardian Name"
-          value={formData.guardian_name}
+       <select
+          name="role"
+          value={formData.role}
           onChange={handleChange}
           required
           className="border p-2 rounded-md"
-        />
-        <input
-          type="text"
-          name="guardian_phone"
-          placeholder="Guardian Phone"
-          value={formData.guardian_phone}
-          onChange={handleChange}
-          required
-          className="border p-2 rounded-md"
-        />
+        >
+          <option value="">Role</option>
+          <option value="Security">Security</option>
+          <option value="Cook">Cook</option> 
+          <option value="Secretary">Secretary</option> 
+          <option value="Cleaner">Cleaner</option> 
+          <option value="Lab_Technician">Lab_Technician</option> 
+          <option value="Nurse">Nurse</option> 
+          <option value="Social_Media_Manager">Social_Media_Manager</option> 
+        </select>  
+
+
+
+        <div>
+            <label className="block mb-1 text-sm text-gray-700" htmlFor="date_of_employment">
+              Date of Employment
+            </label>
+            <input
+              type="date"
+              id="date_of_employment"
+              name="date_of_employment"
+              value={formData.date_of_employment}
+              onChange={handleChange}
+              required
+              className="border p-2 rounded-md w-full"
+            />
+        </div>
+ 
+        
       </div>
 
-      <div className="mt-4 flex justify-end gap-4">
+      <div className="mt-4 flex justify-between gap-4">
         <button
           onClick={onCancel} // Ensure cancel does not trigger submit
           type="button" // Ensure it's not a form submit button
@@ -161,4 +174,4 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   );
 });
 
-export default StudentForm;
+export default StaffForm;

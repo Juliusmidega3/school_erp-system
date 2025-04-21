@@ -6,12 +6,15 @@ import RegisterStudent from "./pages/students/RegisterStudent";
 import StudentList from "./pages/students/StudentList";
 import RegisterTeacher from "./pages/teachers/RegisterTeacher";
 import TeacherList from "./pages/teachers/TeacherList";
+import RegisterForm from "./pages/staff/RegisterStaff"
+import StaffList from "./pages/staff/StaffList"
 import WelcomePage from "./pages/WelcomePage";
 import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
 
 // Route Guard
 import PrivateRoute from "./components/PrivateRoute";
+import RegisterStaff from "./pages/staff/RegisterStaff";
 
 function App() {
   return (
@@ -47,6 +50,7 @@ function App() {
               </PrivateRoute>
             }
           />
+          
           <Route
             path="/teachers"
             element={
@@ -60,6 +64,23 @@ function App() {
             element={
               <PrivateRoute>
                 <RegisterTeacher />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/staffs"
+            element={
+              <PrivateRoute>
+                <StaffList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/staffs/register"
+            element={
+              <PrivateRoute>
+                <RegisterStaff />
               </PrivateRoute>
             }
           />

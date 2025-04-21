@@ -1,13 +1,20 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import home, StudentViewSet, TeacherViewSet
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+from .views import StudentViewSet, TeacherViewSet, RegisterUser, UserViewSet, StaffViewSet
 
-# Create the router and register viewsets
 router = DefaultRouter()
+router.register(r'users', UserViewSet)
 router.register(r'students', StudentViewSet)
 router.register(r'teachers', TeacherViewSet)
+router.register(r'staffs', StaffViewSet)
 
 urlpatterns = [
-    path('', home),
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('register/', RegisterUser.as_view(), name='register'),
+    path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
