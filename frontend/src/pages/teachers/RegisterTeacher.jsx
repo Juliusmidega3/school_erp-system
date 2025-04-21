@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 import TeacherForm from "./TeacherForm";
 import TeacherTable from "./TeacherTable";
 import LogoText from "../../components/LogoText";
@@ -11,7 +11,7 @@ const RegisterTeacher = () => {
   const formRef = useRef();
 
   const fetchTeachers = async () => {
-    const res = await axios.get("http://localhost:8000/api/teachers/");
+    const res = await axiosInstance.get("/teachers/");
     setTeachers(res.data);
   };
 
@@ -20,16 +20,6 @@ const RegisterTeacher = () => {
     fetchTeachers();
   }, []);
 
-  const handleSubmit = async (formData, id) => {
-    if (id) {
-      await axios.put(`http://localhost:8000/api/teachers/${id}/`, formData);
-    } else {
-      await axios.post("http://localhost:8000/api/teachers/", formData);
-    }
-    fetchTeachers();
-    formRef.current.resetForm();
-    setEditTeacher(null);
-  };
 
   const handleEdit = (teacher) => {
     setEditTeacher(teacher);
@@ -62,15 +52,14 @@ const RegisterTeacher = () => {
   const handleFormSubmit = async (formData, id) => {
     try {
       if (id) {
-        await axios.put(`http://127.0.0.1:8000/api/teachers/${id}/`, formData);
+        await axiosInstance.put(`/teachers/${id}/`, formData);
       } else {
-        await axios.post("http://127.0.0.1:8000/api/teachers/", formData);
+        await axiosInstance.post("/teachers/", formData);
       }
-      fetchTeachers();
-      setEditTeacher(null); // clear edit mode
-      // setShowForm(false); ❌ leave form open after submit
+      fetchStaffs();
+      setEditStaff(null);
     } catch (error) {
-      console.error("Error saving teacher:", error);
+      console.error("Error saving staff:", error);
     }
   };
 

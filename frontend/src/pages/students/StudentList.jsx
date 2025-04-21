@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 import LogoText from "../../components/LogoText";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -9,7 +9,7 @@ function StudentList() {
   // Fetch students from the API
   const fetchStudents = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/students/");
+      const res = await axiosInstance.get("/students/");
       setStudents(res.data);
     } catch (err) {
       console.error("Error fetching students:", err);
@@ -22,12 +22,11 @@ function StudentList() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-gray-800 font-sans">
-      <LogoText/>
+      <LogoText />
       <div className="px-6 py-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold text-[#065f46]">Student's List</h2>
           <Link to="/students/register" className="bg-white shadow p-3 rounded-lg hover:shadow-lg transition border border-gray-200 text-center">➕</Link>
-
         </div>
 
         <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden text-sm">
@@ -72,4 +71,5 @@ function StudentList() {
     </div>
   );
 }
+
 export default StudentList;

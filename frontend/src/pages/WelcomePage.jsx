@@ -8,21 +8,30 @@ function WelcomePage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    // Example credentials for demo
-    const adminUsername = "admin";
-    const adminPassword = "admin123";
-
-    if (username === adminUsername && password === adminPassword) {
-      // Save token (you can customize this part with real auth)
-      localStorage.setItem("adminToken", "demo-auth-token");
-      navigate("/dashboard");
-    } else {
-      setError("Invalid username or password");
+  
+    try {
+      const response = await fetch("http://localhost:8000/api/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("adminToken", data.access);
+        navigate("/dashboard");
+      } else {
+        const errorData = await response.json();
+        setError("Login failed: " + (errorData.detail || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Login error. Check console for details.");
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">

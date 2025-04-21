@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 import LogoText from "../../components/LogoText";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -9,7 +9,7 @@ function StaffList() {
   // Fetch staffs from the API
   const fetchStaffs = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/staffs/");
+      const res = await axiosInstance.get("/staffs/");
       setStaffs(res.data);
     } catch (err) {
       console.error("Error fetching staffs:", err);

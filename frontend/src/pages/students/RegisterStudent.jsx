@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 import StudentForm from "./StudentForm";
 import StudentTable from "./StudentTable";
 import LogoText from "../../components/LogoText";
@@ -12,7 +12,7 @@ const RegisterStudent = () => {
   const formRef = useRef();
 
   const fetchStudents = async () => {
-    const res = await axios.get("http://localhost:8000/api/students/");
+    const res = await axiosInstance.get("/students/");
     setStudents(res.data);
   };
 
@@ -20,16 +20,7 @@ const RegisterStudent = () => {
     fetchStudents();
   }, []);
 
-  const handleSubmit = async (formData, id) => {
-    if (id) {
-      await axios.put(`http://localhost:8000/api/students/${id}/`, formData);
-    } else {
-      await axios.post("http://localhost:8000/api/students/", formData);
-    }
-    fetchStudents();
-    formRef.current.resetForm();
-    setEditStudent(null);
-  };
+ 
 
   const handleEdit = (student) => {
     setEditStudent(student);
@@ -40,7 +31,7 @@ const RegisterStudent = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       try {
-        await axios.delete(`http://localhost:8000/api/students/${id}/`);
+        await axiosInstance.delete(`/students/${id}/`);
         fetchStudents();
       } catch (error) {
         console.error("Error deleting Teacher:", error);
@@ -61,15 +52,14 @@ const RegisterStudent = () => {
   const handleFormSubmit = async (formData, id) => {
     try {
       if (id) {
-        await axios.put(`http://127.0.0.1:8000/api/students/${id}/`, formData);
+        await axiosInstance.put(`/students/${id}/`, formData);
       } else {
-        await axios.post("http://127.0.0.1:8000/api/students/", formData);
+        await axiosInstance.post("/students/", formData);
       }
-      fetchStudents();
-      setEditStudent(null); // clear edit mode
-      // setShowForm(false); ❌ leave form open after submit
+      fetchStaffs();
+      setEditStaff(null);
     } catch (error) {
-      console.error("Error saving student:", error);
+      console.error("Error saving staff:", error);
     }
   };
   return (

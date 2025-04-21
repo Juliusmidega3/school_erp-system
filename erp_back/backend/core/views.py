@@ -6,21 +6,49 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .models import Student, Teacher, Staff
 from .serializers import StudentSerializer, TeacherSerializer, UserSerializer, StaffSerializer
+from rest_framework.decorators import api_view, permission_classes
+from django.db.models import Count
+
+class DashboardStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Calculate the counts
+        student_count = Student.objects.count()
+        teacher_count = Teacher.objects.count()
+        staff_count = Staff.objects.count()
+
+        # Return the counts as a JSON response
+        return Response({
+            'students': student_count,
+            'teachers': teacher_count,
+            'staff': staff_count
+        })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def dashboard_stats(request):
+    return Response({
+        "students": Student.objects.count(),
+        "teachers": Teacher.objects.count(),
+        "staff": Staff.objects.count()
+    })
 
 class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-   # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
-   # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
    
 class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
-   # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
    
 
 class RegisterUser(APIView):

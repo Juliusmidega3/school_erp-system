@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 import LogoText from "../../components/LogoText";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -9,7 +9,7 @@ function TeacherList() {
   // Fetch teachers from the API
   const fetchTeachers = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/teachers/");
+      const res = await axiosInstance.get("/teachers/");
       setTeachers(res.data);
     } catch (err) {
       console.error("Error fetching teachers:", err);
