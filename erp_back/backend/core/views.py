@@ -1,30 +1,23 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from .models import Student, Teacher, Staff
 from .serializers import StudentSerializer, TeacherSerializer, UserSerializer, StaffSerializer
 from rest_framework.decorators import api_view, permission_classes
-from django.db.models import Count
+
+User = get_user_model()
 
 class DashboardStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # Calculate the counts
-        student_count = Student.objects.count()
-        teacher_count = Teacher.objects.count()
-        staff_count = Staff.objects.count()
-
-        # Return the counts as a JSON response
         return Response({
-            'students': student_count,
-            'teachers': teacher_count,
-            'staff': staff_count
+            'students': Student.objects.count(),
+            'teachers': Teacher.objects.count(),
+            'staff': Staff.objects.count()
         })
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -44,12 +37,11 @@ class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
     permission_classes = [IsAuthenticated]
-   
+
 class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
     permission_classes = [IsAuthenticated]
-   
 
 class RegisterUser(APIView):
     def post(self, request):

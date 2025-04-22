@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance"; // Make sure axiosInstance is set up
 import logo from "../../assets/faulu-logo.png";  // Adjust the path
 
 function StudentLogin() {
@@ -12,20 +13,14 @@ function StudentLogin() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/api/student-login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ admission_number: admissionNumber, password }),
+      const response = await axiosInstance.post("/student-login/", {
+        admission_number: admissionNumber,
+        password,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("studentToken", data.access); // Store the token
-        navigate("/student-dashboard"); // Redirect to the student dashboard
-      } else {
-        const errorData = await response.json();
-        setError("Login failed: " + (errorData.detail || "Unknown error"));
-      }
+      // On success, store the token and navigate
+      localStorage.setItem("studentToken", response.data.access); // Store the token
+      navigate("/student-dashboard"); // Redirect to the student dashboard
     } catch (err) {
       console.error("Login error:", err);
       setError("Login error. Please try again later.");

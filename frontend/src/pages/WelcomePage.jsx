@@ -1,34 +1,39 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/faulu-logo.png";
+import axiosInstance from "../utils/axiosInstance";
 
 function WelcomePage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");  // Changed from username to email
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+    setError("");
+    setLoading(true);
+
     try {
-      const response = await fetch("http://localhost:8000/api/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+      // Ensure backend accepts 'email' instead of 'username'
+      const response = await axiosInstance.post("/login/", {
+        email,  // Changed to email
+        password,
       });
-  
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("adminToken", data.access);
-        navigate("/dashboard");
-      } else {
-        const errorData = await response.json();
-        setError("Login failed: " + (errorData.detail || "Unknown error"));
-      }
+
+      const data = response.data;
+      localStorage.setItem("adminToken", data.access);  // Save token in localStorage
+      navigate("/dashboard"); // Redirect to dashboard after successful login
     } catch (err) {
       console.error("Login error:", err);
-      setError("Login error. Check console for details.");
+      // Ensure error structure matches expected data
+      setError(
+        err?.response?.data?.detail ||
+        "Login failed. Please check your credentials."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,13 +58,13 @@ function WelcomePage() {
 
         <form className="space-y-4" onSubmit={handleLogin}>
           <div>
-            <label className="block text-gray-700 mb-1">Username</label>
+            <label className="block text-gray-700 mb-1">Email</label> {/* Changed to Email */}
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"  
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}  
               className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#065f46]"
-              placeholder="Enter your username"
+              placeholder="Enter your email"  
               required
             />
           </div>
@@ -77,9 +82,10 @@ function WelcomePage() {
 
           <button
             type="submit"
-            className="w-full bg-[#065f46] text-white py-2 rounded hover:bg-[#044f3b] transition"
+            disabled={loading}
+            className={`w-full ${loading ? "bg-gray-400" : "bg-[#065f46] hover:bg-[#044f3b]"} text-white py-2 rounded transition`}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 

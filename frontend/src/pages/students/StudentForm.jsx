@@ -8,19 +8,21 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
     last_name: "",
     gender: "",
     date_of_birth: "",
+    address: "",
     admission_number: "",
     class_enrolled: "",
     guardian_name: "",
     guardian_phone: "",
+    profile_picture: null,
   });
 
-  // Populate form if editing
   useEffect(() => {
     if (initialData) {
       setFormData(prev => ({
         ...prev,
         ...initialData,
-        password: "", // Do not auto-fill password when editing
+        password: "", // clear password on edit
+        profile_picture: null, // reset picture unless re-uploading
       }));
     }
   }, [initialData]);
@@ -34,22 +36,34 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
         last_name: "",
         gender: "",
         date_of_birth: "",
+        address: "",
         admission_number: "",
         class_enrolled: "",
         guardian_name: "",
         guardian_phone: "",
+        profile_picture: null,
       });
     },
   }));
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, files } = e.target;
+    if (name === "profile_picture") {
+      setFormData(prev => ({ ...prev, [name]: files[0] }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData, initialData?.id);
+    const submissionData = new FormData();
+    for (let key in formData) {
+      if (formData[key] !== null && formData[key] !== "") {
+        submissionData.append(key, formData[key]);
+      }
+    }
+    onSubmit(submissionData, initialData?.id);
   };
 
   return (
@@ -117,6 +131,16 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           required
           className="border p-2 rounded-md"
         />
+
+        <input
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={formData.address}
+          onChange={handleChange}
+          className="border p-2 rounded-md"
+        />
+
         <input
           type="text"
           name="admission_number"
@@ -126,6 +150,7 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           required
           className="border p-2 rounded-md"
         />
+
         <select
           name="class_enrolled"
           value={formData.class_enrolled}
@@ -165,6 +190,17 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           required
           className="border p-2 rounded-md"
         />
+
+        <div className="col-span-2">
+          <label className="block text-sm mb-1 text-gray-700">Profile Picture (optional)</label>
+          <input
+            type="file"
+            name="profile_picture"
+            accept="image/*"
+            onChange={handleChange}
+            className="border p-2 rounded-md w-full"
+          />
+        </div>
       </div>
 
       <div className="mt-4 flex justify-end gap-4">

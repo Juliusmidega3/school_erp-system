@@ -54,24 +54,35 @@ const RegisterTeacher = () => {
   const handleFormSubmit = async (formData, id) => {
     try {
       if (id) {
-        await axiosInstance.put(`/teachers/${id}/`, formData);
+        await axiosInstance.put(`/teachers/${id}/`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       } else {
-        await axiosInstance.post("/teachers/", formData);
+        await axiosInstance.post("/teachers/", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
       fetchTeachers();
       setEditTeacher(null);
       setShowForm(false);
+      formRef.current?.resetForm?.();
     } catch (error) {
-      console.error("Error saving teacher:", error);
+      console.error("Error saving teacher:", error.response || error);
     }
   };
 
   return (
     <div>
       <LogoText />
+
       {showForm && (
         <div className="mt-10 bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-gray-200">
           <TeacherForm
+            ref={formRef}
             key={editTeacher ? editTeacher.id : Date.now()}
             initialData={editTeacher}
             onSubmit={handleFormSubmit}
@@ -79,6 +90,7 @@ const RegisterTeacher = () => {
           />
         </div>
       )}
+
       <div className="flex justify-between mt-3 items-center">
         <h2 className="text-xl font-bold">Teacher List</h2>
         <button
@@ -88,6 +100,7 @@ const RegisterTeacher = () => {
           ➕ Hire a Teacher
         </button>
       </div>
+
       <TeacherTable
         teachers={teachers}
         onEdit={handleEdit}
