@@ -33,18 +33,20 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
 
   useEffect(() => {
     if (initialData) {
-      setFormData({
+      console.log("Updating form with initialData:", initialData);
+      setFormData((prev) => ({
+        ...prev,
         password: "",
         email: initialData.user?.email || "",
-        first_name: initialData.first_name || "",
-        last_name: initialData.last_name || "",
+        first_name: initialData.user?.first_name || "",
+        last_name: initialData.user?.last_name || "",
         gender: initialData.gender || "",
         phone_number: initialData.phone_number || "",
         marital_status: initialData.marital_status || "",
         date_of_birth: initialData.date_of_birth || "",
         date_of_employment: initialData.date_of_employment || "",
         profile_picture: null,
-      });
+      }));
     }
   }, [initialData]);
 
@@ -77,17 +79,18 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Prepare the user object
-    const userPayload = { email: formData.email };
+    const userPayload = {
+      email: formData.email,
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+    };
+
     if (!initialData || formData.password) {
       userPayload.password = formData.password;
     }
 
-    // Combine full data
     const dataToSubmit = {
       user: userPayload,
-      first_name: formData.first_name,
-      last_name: formData.last_name,
       gender: formData.gender,
       phone_number: formData.phone_number,
       marital_status: formData.marital_status,
@@ -202,19 +205,6 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           required
           className="border p-2 rounded-md"
         />
-
-        <div className="col-span-2">
-          <label className="block text-sm mb-1 text-gray-700">
-            Profile Picture (optional)
-          </label>
-          <input
-            type="file"
-            name="profile_picture"
-            accept="image/*"
-            onChange={handleChange}
-            className="border p-2 rounded-md w-full"
-          />
-        </div>
       </div>
 
       <div className="mt-4 flex justify-between gap-4">

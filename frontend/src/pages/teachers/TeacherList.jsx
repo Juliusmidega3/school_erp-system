@@ -61,7 +61,9 @@ const TeacherList = () => {
                 teachers.map((t, i) => (
                   <tr key={t.id} className="border-b hover:bg-gray-50">
                     <td className="py-2 px-4">{i + 1}</td>
-                    <td className="py-2 px-4">{`${t.first_name} ${t.last_name}`}</td>
+                    <td className="py-2 px-4">
+                      {`${t.user?.first_name || "-"} ${t.user?.last_name || "-"}`}
+                    </td>
                     <td className="py-2 px-4 text-center">{t.gender}</td>
                     <td className="py-2 px-4 text-center">{t.user?.email || "-"}</td>
                     <td className="py-2 px-4 text-center">{t.phone_number}</td>

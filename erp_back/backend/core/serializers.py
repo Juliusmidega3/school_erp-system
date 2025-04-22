@@ -1,23 +1,38 @@
 from rest_framework import serializers
+from .models import Teacher, Student, Staff
 from django.contrib.auth import get_user_model
-from .models import Student, Teacher, Staff
 
 User = get_user_model()
 
+# -------- User Serializer --------
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True)
+    first_name = serializers.CharField(required=False, allow_blank=True)
+    last_name = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'password']
+        fields = ['id', 'email', 'password', 'first_name', 'last_name']
 
     def create(self, validated_data):
         return User.objects.create_user(
             email=validated_data['email'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            first_name=validated_data.get('first_name', ''),
+            last_name=validated_data.get('last_name', ''),
         )
 
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        if 'password' in validated_data:
+            instance.set_password(validated_data['password'])
+        instance.save()
+        return instance
+
+# -------- Student Serializer --------
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
@@ -29,65 +44,56 @@ class StudentSerializer(serializers.ModelSerializer):
         user_data = validated_data.pop('user')
         user = User.objects.create_user(
             email=user_data['email'],
-            password=user_data['password']
+            password=user_data['password'],
+            first_name=user_data.get('first_name', ''),
+            last_name=user_data.get('last_name', ''),
         )
-        student = Student.objects.create(user=user, **validated_data)
-        return student
+        return Student.objects.create(user=user, **validated_data)
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
         if user_data:
-            instance.user.email = user_data.get('email', instance.user.email)
-            if 'password' in user_data:
-                instance.user.set_password(user_data['password'])
-            instance.user.save()
+            self.fields['user'].update(instance.user, user_data)
+        return super().update(instance, validated_data)
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-        return instance
-
+# -------- Teacher Serializer --------
 class TeacherSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    full_name = serializers.SerializerMethodField()
-    email = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
 
     class Meta:
         model = Teacher
         fields = [
-            'id', 'full_name', 'email', 'phone_number',
-            'gender', 'marital_status', 'date_of_birth',
-            'date_of_employment', 'user'
+            'id',
+            'user',
+            'name',
+            'phone_number',
+            'gender',
+            'marital_status',
+            'date_of_birth',
+            'date_of_employment',
         ]
 
-    def get_full_name(self, obj):
-        return f"{obj.first_name} {obj.last_name}"
-
-    def get_email(self, obj):
-        return obj.user.email
+    def get_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}"
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
         user = User.objects.create_user(
             email=user_data['email'],
-            password=user_data['password']
+            password=user_data['password'],
+            first_name=user_data.get('first_name', ''),
+            last_name=user_data.get('last_name', ''),
         )
-        teacher = Teacher.objects.create(user=user, **validated_data)
-        return teacher
+        return Teacher.objects.create(user=user, **validated_data)
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
         if user_data:
-            instance.user.email = user_data.get('email', instance.user.email)
-            if 'password' in user_data:
-                instance.user.set_password(user_data['password'])
-            instance.user.save()
+            self.fields['user'].update(instance.user, user_data)
+        return super().update(instance, validated_data)
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-        return instance
-
+# -------- Staff Serializer --------
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff

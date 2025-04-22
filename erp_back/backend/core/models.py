@@ -2,8 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils import timezone
 
-
-# Custom user manager
+# ----------------------------
+# Custom User Manager
+# ----------------------------
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -19,10 +20,13 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         return self.create_user(email, password, **extra_fields)
 
-
-# Custom user model using email instead of username
+# ----------------------------
+# Custom User Model
+# ----------------------------
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=100, blank=True)  # ✅ Added
+    last_name = models.CharField(max_length=100, blank=True)   # ✅ Added
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
@@ -35,8 +39,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
-
+# ----------------------------
 # Student Model
+# ----------------------------
 class Student(models.Model):
     GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female')]
     CLASS_CHOICES = [
@@ -60,8 +65,9 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
+# ----------------------------
 # Teacher Model
+# ----------------------------
 class Teacher(models.Model):
     GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
     MARITAL_STATUS = [('Single', 'Single'), ('Married', 'Married')]
@@ -78,8 +84,14 @@ class Teacher(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def name(self):
+        return f"{self.first_name} {self.last_name}"
 
-# Staff Model (not linked to user account by default)
+
+# ----------------------------
+# Staff Model (not linked to user)
+# ----------------------------
 class Staff(models.Model):
     GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
     MARITAL_STATUS = [('Single', 'Single'), ('Married', 'Married')]
