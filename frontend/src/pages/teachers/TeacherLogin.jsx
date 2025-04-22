@@ -16,17 +16,35 @@ const TeacherLogin = () => {
     setError("");
 
     try {
+      // 1. Login request
       const res = await axiosInstance.post("/login/", { email, password });
-
       const { access, refresh } = res.data;
 
-      // Store JWT tokens in localStorage
+      // 2. Clear tokens for other roles to avoid conflicts
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("studentToken");
+
+      // 3. Store teacher token(s)
       localStorage.setItem("teacherToken", access);
       if (refresh) {
         localStorage.setItem("refreshToken", refresh);
       }
 
-      // Optionally: fetch teacher profile to confirm role here
+      // 4. Fetch teacher profile to confirm role
+      const profileRes = await axiosInstance.get("/profile/", {
+        headers: { Authorization: `Bearer ${access}` },
+      });
+
+      if (profileRes.data.role !== "teacher") {
+        // Role mismatch: clear tokens and show error
+        localStorage.removeItem("teacherToken");
+        if (refresh) localStorage.removeItem("refreshToken");
+        setError("You are not authorized as a teacher.");
+        setLoading(false);
+        return;
+      }
+
+      // 5. Navigate to teacher dashboard after successful login & verification
       navigate("/teacher-dashboard");
     } catch (err) {
       const message =
@@ -66,6 +84,7 @@ const TeacherLogin = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
             />
           </div>
 
@@ -80,6 +99,7 @@ const TeacherLogin = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
             />
           </div>
 
