@@ -4,7 +4,6 @@ import StudentForm from "./StudentForm";
 import StudentTable from "./StudentTable";
 import LogoText from "../../components/LogoText";
 
-
 const RegisterStudent = () => {
   const [students, setStudents] = useState([]);
   const [editStudent, setEditStudent] = useState(null);
@@ -12,15 +11,17 @@ const RegisterStudent = () => {
   const formRef = useRef();
 
   const fetchStudents = async () => {
-    const res = await axiosInstance.get("/students/");
-    setStudents(res.data);
+    try {
+      const res = await axiosInstance.get("/students/");
+      setStudents(res.data);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
   };
 
   useEffect(() => {
     fetchStudents();
   }, []);
-
- 
 
   const handleEdit = (student) => {
     setEditStudent(student);
@@ -34,7 +35,7 @@ const RegisterStudent = () => {
         await axiosInstance.delete(`/students/${id}/`);
         fetchStudents();
       } catch (error) {
-        console.error("Error deleting Teacher:", error);
+        console.error("Error deleting student:", error);
       }
     }
   };
@@ -43,10 +44,11 @@ const RegisterStudent = () => {
     setShowForm(false);
     setEditStudent(null);
   };
+
   const handleAddNew = () => {
     setEditStudent(null);
     setShowForm(true);
-    window.scrollTo({ top: document.body.scrollIntoView, behavior: "smooth" });
+    window.scrollTo({ top: document.body.scrollIntoView(), behavior: "smooth" });
   };
 
   const handleFormSubmit = async (formData, id) => {
@@ -63,10 +65,10 @@ const RegisterStudent = () => {
       console.error("Error saving student:", error);
     }
   };
-  
+
   return (
-    <div>       
-      <LogoText  />  
+    <div>
+      <LogoText />
       {showForm && (
         <div className="mt-10 bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-gray-200">
           <StudentForm
@@ -76,11 +78,16 @@ const RegisterStudent = () => {
             onCancel={handleCancel}
           />
         </div>
-      )} 
+      )}
       <div className="flex justify-between mt-3 items-center">
-        <h2 className="text-xl font-bold  ">Student List</h2>
-        <button onClick={handleAddNew} className="bg-white shadow p-3 rounded-lg hover:shadow-lg transition border border-gray-200 text-center">➕ Enroll a student</button> 
-      </div>  
+        <h2 className="text-xl font-bold">Student List</h2>
+        <button
+          onClick={handleAddNew}
+          className="bg-white shadow p-3 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
+        >
+          ➕ Enroll a student
+        </button>
+      </div>
       <StudentTable students={students} onEdit={handleEdit} onDelete={handleDelete} />
     </div>
   );

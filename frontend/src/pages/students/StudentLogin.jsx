@@ -1,16 +1,25 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../utils/axiosInstance"; // Make sure axiosInstance is set up
-import logo from "../../assets/faulu-logo.png";  // Adjust the path
+import axiosInstance from "../../utils/axiosInstance"; // Ensure axiosInstance is properly set up
+import logo from "../../assets/faulu-logo.png";  // Ensure the path is correct
 
 function StudentLogin() {
   const [admissionNumber, setAdmissionNumber] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state for the login request
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    // Basic client-side validation
+    if (!admissionNumber || !password) {
+      setError("Both fields are required.");
+      return;
+    }
+
+    setLoading(true); // Set loading state to true while the request is in progress
 
     try {
       const response = await axiosInstance.post("/student-login/", {
@@ -23,7 +32,9 @@ function StudentLogin() {
       navigate("/student-dashboard"); // Redirect to the student dashboard
     } catch (err) {
       console.error("Login error:", err);
-      setError("Login error. Please try again later.");
+      setError("Login failed. Please check your credentials and try again.");
+    } finally {
+      setLoading(false); // Set loading state back to false once the request is complete
     }
   };
 
@@ -73,8 +84,13 @@ function StudentLogin() {
           <button
             type="submit"
             className="w-full bg-[#065f46] text-white py-2 rounded hover:bg-[#044f3b] transition"
+            disabled={loading} // Disable the button when loading
           >
-            Login
+            {loading ? (
+              <span>Loading...</span> // Loading state text
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
 

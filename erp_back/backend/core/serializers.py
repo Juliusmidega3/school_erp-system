@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Teacher, Student, Staff
+from .models import Teacher, Student, Staff, Class  # Ensure Class is imported
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -98,3 +98,15 @@ class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
         fields = '__all__'
+
+# -------- Class Serializer --------
+class ClassSerializer(serializers.ModelSerializer):
+    teacher = TeacherSerializer()
+    student_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Class
+        fields = ['id', 'name', 'teacher', 'student_count']
+
+    def get_student_count(self, obj):
+        return obj.students.count()

@@ -16,8 +16,9 @@ import TeacherLogin from "./pages/teachers/TeacherLogin";
 import StudentLogin from "./pages/students/StudentLogin";
 import TeacherDashboard from "./pages/teachers/TeacherDashboard";
 
-// Components
+// Layout & Route Guards
 import PrivateRoute from "./components/PrivateRoute";
+import TeacherRoute from "./components/TeacherRoute"; // ⬅️ NEW
 import MainLayout from "./components/MainLayout";
 
 function App() {
@@ -30,7 +31,7 @@ function App() {
         <Route path="/student-login" element={<StudentLogin />} />
         <Route path="/teacher-login" element={<TeacherLogin />} />
 
-        {/* Protected Routes */}
+        {/* Admin Protected Routes */}
         <Route
           path="/dashboard"
           element={
@@ -101,18 +102,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        
-        <Route
-          path="/teacher-dashboard"
-          element={
-            <PrivateRoute>
-              <MainLayout>
-                <TeacherDashboard />
-              </MainLayout>
-            </PrivateRoute>
-          }
-        />
-
         <Route
           path="/announcements"
           element={
@@ -121,6 +110,18 @@ function App() {
                 <Announcements />
               </MainLayout>
             </PrivateRoute>
+          }
+        />
+
+        {/* Teacher-only Dashboard */}
+        <Route
+          path="/teacher-dashboard"
+          element={
+            <TeacherRoute>
+              <MainLayout>
+                <TeacherDashboard />
+              </MainLayout>
+            </TeacherRoute>
           }
         />
 

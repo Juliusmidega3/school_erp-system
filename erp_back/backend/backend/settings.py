@@ -104,6 +104,12 @@ CORS_ALLOW_ALL_ORIGINS = True
 # Custom User Model
 AUTH_USER_MODEL = 'core.CustomUser'  # Make sure 'core' matches your app name
 
+# Authentication Backend Configuration
+AUTHENTICATION_BACKENDS = (
+    'core.authentication.AdmissionNumberAuthBackend',  # Add custom authentication backend
+    'django.contrib.auth.backends.ModelBackend',  # Allow fallback to default authentication
+)
+
 # Django REST Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

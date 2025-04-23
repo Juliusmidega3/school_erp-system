@@ -34,13 +34,13 @@ const StudentTable = ({ students, onEdit, onDelete }) => {
                 <td className="border px-2 py-1 space-x-2 text-center">
                   <button
                     onClick={() => onEdit(student)}
-                    className="bg-yellow-400 text-white px-3 py-1 rounded"
+                    className="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => onDelete(student.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded"
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                   >
                     Delete
                   </button>

@@ -2,13 +2,11 @@ import React, { forwardRef, useImperativeHandle, useState, useEffect } from "rea
 
 const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   const [formData, setFormData] = useState({
-    username: "",
     password: "",
     first_name: "",
     last_name: "",
     gender: "",
     date_of_birth: "",
-    address: "",
     admission_number: "",
     class_enrolled: "",
     guardian_name: "",
@@ -30,13 +28,11 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
   useImperativeHandle(ref, () => ({
     resetForm() {
       setFormData({
-        username: "",
         password: "",
         first_name: "",
         last_name: "",
         gender: "",
         date_of_birth: "",
-        address: "",
         admission_number: "",
         class_enrolled: "",
         guardian_name: "",
@@ -73,15 +69,6 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleChange}
-          required
-          className="border p-2 rounded-md"
-        />
         <input
           type="password"
           name="password"
@@ -129,15 +116,6 @@ const StudentForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           value={formData.date_of_birth}
           onChange={handleChange}
           required
-          className="border p-2 rounded-md"
-        />
-
-        <input
-          type="text"
-          name="address"
-          placeholder="Address"
-          value={formData.address}
-          onChange={handleChange}
           className="border p-2 rounded-md"
         />
 
