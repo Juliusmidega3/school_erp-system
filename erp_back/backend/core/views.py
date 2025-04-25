@@ -1,23 +1,20 @@
+from django.contrib.auth import get_user_model, authenticate
 from rest_framework import viewsets, generics, permissions
-from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
-from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+
 from .models import Student, Teacher, Staff, Class
 from .serializers import (
-    StudentSerializer,
-    TeacherSerializer,
-    StaffSerializer,
-    UserSerializer,
-    ClassSerializer,
+    StudentSerializer, TeacherSerializer, StaffSerializer,
+    UserSerializer, ClassSerializer
 )
 
 User = get_user_model()
 
-# -------- Custom Login for Students --------
+# -------- Custom Student Login --------
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def student_login(request):
@@ -33,22 +30,18 @@ def student_login(request):
     except Student.DoesNotExist:
         return Response({"detail": "Student not found."}, status=404)
 
-    # Authenticate the user
-    user = authenticate(request, username=user.email, password=password)
-    if user is None:
+    authenticated_user = authenticate(request, email=user.email, password=password)
+    if authenticated_user is None:
         return Response({"detail": "Invalid credentials."}, status=401)
 
-    # Generate JWT token
-    refresh = RefreshToken.for_user(user)
-    access_token = refresh.access_token
-
+    refresh = RefreshToken.for_user(authenticated_user)
     return Response({
-        'access_token': str(access_token),
+        'access_token': str(refresh.access_token),
         'refresh_token': str(refresh),
     })
 
 
-# -------- User registration view --------
+# -------- User Registration --------
 class RegisterUser(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -69,6 +62,15 @@ class StudentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            print("❌ Validation errors:", serializer.errors)
+            return Response(serializer.errors, status=400)
+
+        self.perform_create(serializer)
+        return Response(serializer.data, status=201)
+
 
 # -------- Teacher ViewSet --------
 class TeacherViewSet(viewsets.ModelViewSet):
@@ -83,9 +85,10 @@ class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
 
-# -------- Dashboard stats (function-based) --------
+# -------- Dashboard Stats (Function-Based) --------
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def dashboard_stats(request):
@@ -97,7 +100,7 @@ def dashboard_stats(request):
     return Response(data)
 
 
-# -------- Dashboard stats (class-based) --------
+# -------- Dashboard Stats (Class-Based) --------
 class DashboardStatsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -110,12 +113,11 @@ class DashboardStatsView(APIView):
         return Response(data)
 
 
-# -------- Authenticated user profile with role --------
+# -------- Authenticated User Profile with Role --------
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def user_profile(request):
     user = request.user
-
     role = "admin"
     if hasattr(user, "teacher"):
         role = "teacher"
@@ -138,20 +140,17 @@ def user_profile(request):
 @permission_classes([permissions.IsAuthenticated])
 def teacher_dashboard(request):
     user = request.user
-
     if not hasattr(user, 'teacher'):
         return Response({"detail": "You are not authorized as a teacher."}, status=403)
 
     teacher = user.teacher
-    classes = teacher.classes.all()  # Adjust this based on related_name in model
+    classes = teacher.classes.all()  # assumes related_name='classes' in Class model
 
-    response_data = {
+    return Response({
         "teacher": {
             "id": teacher.id,
             "name": teacher.name,
-            "email": teacher.user.email,  # Fixed here
+            "email": teacher.user.email,
         },
         "classes": ClassSerializer(classes, many=True).data,
-    }
-
-    return Response(response_data)
+    })

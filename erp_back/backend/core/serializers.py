@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Teacher, Student, Staff, Class  # Ensure Class is imported
 from django.contrib.auth import get_user_model
+from .models import Student, Teacher, Staff, Class
 
 User = get_user_model()
 
@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password'],
             first_name=validated_data.get('first_name', ''),
-            last_name=validated_data.get('last_name', ''),
+            last_name=validated_data.get('last_name', '')
         )
 
     def update(self, instance, validated_data):
@@ -35,26 +35,36 @@ class UserSerializer(serializers.ModelSerializer):
 # -------- Student Serializer --------
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    class_enrolled = serializers.SerializerMethodField()
 
     class Meta:
         model = Student
-        fields = '__all__'
+        fields = [
+            'id', 'user', 'gender', 'date_of_birth', 'admission_number',
+            'admission_date', 'class_enrolled', 'guardian_name', 'guardian_phone'
+        ]
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        user = User.objects.create_user(
-            email=user_data['email'],
-            password=user_data['password'],
-            first_name=user_data.get('first_name', ''),
-            last_name=user_data.get('last_name', ''),
-        )
-        return Student.objects.create(user=user, **validated_data)
+        user_serializer = UserSerializer(data=user_data)
+        user_serializer.is_valid(raise_exception=True)
+        user = user_serializer.save()
+        # Create the student with class_id directly
+        student = Student.objects.create(user=user, **validated_data)
+        return student
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
         if user_data:
-            self.fields['user'].update(instance.user, user_data)
+            user_serializer = UserSerializer(instance=instance.user, data=user_data, partial=True)
+            user_serializer.is_valid(raise_exception=True)
+            user_serializer.save()
+        # Handle class_enrolled update correctly
         return super().update(instance, validated_data)
+
+    def get_class_enrolled(self, obj):
+        # Adjust to use class_id (assuming class_enrollments is a many-to-many field to Class)
+        return [class_obj.name for class_obj in obj.class_enrollments.all()]
 
 # -------- Teacher Serializer --------
 class TeacherSerializer(serializers.ModelSerializer):
@@ -64,14 +74,8 @@ class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = [
-            'id',
-            'user',
-            'name',
-            'phone_number',
-            'gender',
-            'marital_status',
-            'date_of_birth',
-            'date_of_employment',
+            'id', 'user', 'phone_number', 'gender',
+            'marital_status', 'date_of_birth', 'date_of_employment', 'name'
         ]
 
     def get_name(self, obj):
@@ -79,18 +83,17 @@ class TeacherSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        user = User.objects.create_user(
-            email=user_data['email'],
-            password=user_data['password'],
-            first_name=user_data.get('first_name', ''),
-            last_name=user_data.get('last_name', ''),
-        )
+        user_serializer = UserSerializer(data=user_data)
+        user_serializer.is_valid(raise_exception=True)
+        user = user_serializer.save()
         return Teacher.objects.create(user=user, **validated_data)
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
         if user_data:
-            self.fields['user'].update(instance.user, user_data)
+            user_serializer = UserSerializer(instance=instance.user, data=user_data, partial=True)
+            user_serializer.is_valid(raise_exception=True)
+            user_serializer.save()
         return super().update(instance, validated_data)
 
 # -------- Staff Serializer --------
@@ -101,12 +104,9 @@ class StaffSerializer(serializers.ModelSerializer):
 
 # -------- Class Serializer --------
 class ClassSerializer(serializers.ModelSerializer):
-    teacher = TeacherSerializer()
-    student_count = serializers.SerializerMethodField()
+    teacher = TeacherSerializer(read_only=True)
+    students = StudentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Class
-        fields = ['id', 'name', 'teacher', 'student_count']
-
-    def get_student_count(self, obj):
-        return obj.students.count()
+        fields = ['id', 'name', 'teacher', 'students']

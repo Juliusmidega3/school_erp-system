@@ -25,8 +25,8 @@ class CustomUserManager(BaseUserManager):
 # ---------------------------- #
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=100, blank=True)  # ✅ Added
-    last_name = models.CharField(max_length=100, blank=True)   # ✅ Added
+    first_name = models.CharField(max_length=100, blank=True)
+    last_name = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
@@ -44,26 +44,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 # ---------------------------- #
 class Student(models.Model):
     GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female')]
-    CLASS_CHOICES = [
-        ('PP 1', 'PP 1'), ('PP 2', 'PP 2'), ('Grade 1', 'Grade 1'),
-        ('Grade 2', 'Grade 2'), ('Grade 3', 'Grade 3'), ('Grade 4', 'Grade 4'),
-        ('Grade 5', 'Grade 5'), ('Grade 6', 'Grade 6'), ('Grade 7', 'Grade 7'),
-        ('Grade 8', 'Grade 8'), ('Grade 9', 'Grade 9'),
-    ]
 
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     date_of_birth = models.DateField()
     admission_number = models.CharField(max_length=50, unique=True)
     admission_date = models.DateField(auto_now_add=True)
-    class_enrolled = models.CharField(max_length=10, choices=CLASS_CHOICES)
     guardian_name = models.CharField(max_length=100)
     guardian_phone = models.CharField(max_length=15)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
 
 # ---------------------------- #
 # Teacher Model
@@ -73,8 +64,6 @@ class Teacher(models.Model):
     MARITAL_STATUS = [('Single', 'Single'), ('Married', 'Married')]
 
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=15)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     marital_status = models.CharField(max_length=11, choices=MARITAL_STATUS)
@@ -82,11 +71,11 @@ class Teacher(models.Model):
     date_of_employment = models.DateField()
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
 
     @property
     def name(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
 
 # ---------------------------- #
 # Staff Model (not linked to user)
@@ -120,7 +109,7 @@ class Staff(models.Model):
 # Class Model
 # ---------------------------- #
 class Class(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='classes')
     students = models.ManyToManyField(Student, related_name='class_enrollments')
 
