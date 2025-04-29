@@ -70,22 +70,68 @@ class Staff(models.Model):
         return f"{self.first_name} {self.last_name}"
     
     
-from rest_framework import viewsets
+# core/views.py
 
+from rest_framework import viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from .models import Student, Teacher, Staff
 from .serializers import StudentSerializer, TeacherSerializer, StaffSerializer
 
-# CRUD for models
+
+# ViewSets for CRUD operations
+
 class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+
 
 class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
 
+
 class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
 
+
+# Custom dashboard stats API
+
+# core/views.py
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import Student, Teacher, Staff
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def dashboard_stats(request):
+    students_count = Student.objects.count()
+    teachers_count = Teacher.objects.count()
+    staffs_count = Staff.objects.count()
+
+    return Response({
+        'students': students_count,
+        'teachers': teachers_count,
+        'staff': staffs_count
+    })
+
+# core/urls.py
+
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+from .views import StaffViewSet, StudentViewSet, TeacherViewSet, dashboard_stats
+
+router = DefaultRouter()
+router.register(r'staffs', StaffViewSet, basename='staff')
+router.register(r'students', StudentViewSet, basename='student')
+router.register(r'teachers', TeacherViewSet, basename='teacher')
+
+urlpatterns = [
+    path('', include(router.urls)),
+    path('dashboard-stats/', dashboard_stats, name='dashboard-stats'),
+]

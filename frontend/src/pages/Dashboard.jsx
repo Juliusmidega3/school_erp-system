@@ -1,89 +1,147 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import LogoText from "../components/LogoText";
+import axios from "axios";
+import { motion } from "framer-motion";
+import CountUp from "react-countup";
+import { toast, Toaster } from "react-hot-toast";
+import { FaUserGraduate, FaChalkboardTeacher, FaUserTie } from "react-icons/fa";
 
 function Dashboard() {
-  const [stats, setStats] = useState({ students: 0, teachers: 0, staff: 0 });
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    navigate("/");
-  };
+  const [counts, setCounts] = useState({ students: 0, teachers: 0, staffs: 0 });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchCounts = async () => {
       try {
-        const token = localStorage.getItem("adminToken");
-        const response = await axios.get("http://127.0.0.1:8000/api/dashboard-stats/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const token = localStorage.getItem("access_token");
+        if (!token) throw new Error("No token found");
+
+        const response = await axios.get("http://localhost:8000/api/counts/", {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        setStats(response.data);
+
+        setCounts(response.data);
       } catch (error) {
-        console.error("Error fetching dashboard stats:", error);
+        console.error("Failed to fetch counts:", error);
+        if (error.response?.status === 401) {
+          handleLogout();
+        } else {
+          toast.error("An error occurred while fetching data. Please try again.");
+        }
+      } finally {
+        setLoading(false);
       }
     };
-  
-    fetchStats();
+
+    fetchCounts();
   }, []);
-  
 
-  return (
-    <>
-      <LogoText/>
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    toast.success("Logged out successfully!");
+    setTimeout(() => navigate("/admin-login"), 1500);
+  };
 
-      <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8">
-      <h1 className="text-3xl font-bold mb-6 text-[#065f46]">
-        Welcome, Admin 👋
-      </h1>
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 },
+  };
 
-      <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-2xl">
-        <div className="bg-white p-4 shadow rounded text-center">
-          <h2 className="text-lg font-semibold text-gray-600">Total Students</h2>
-          <p className="text-2xl font-bold text-green-700">{stats.students}</p>
-        </div>
-        <div className="bg-white p-4 shadow rounded text-center">
-          <h2 className="text-lg font-semibold text-gray-600">Total Teachers</h2>
-          <p className="text-2xl font-bold text-green-700">{stats.teachers}</p>
-        </div>
-        <div className="bg-white p-4 shadow rounded text-center">
-          <h2 className="text-lg font-semibold text-gray-600">Total Staff</h2>
-          <p className="text-2xl font-bold text-green-700">{stats.staff}</p>
-        </div>
-      </div>      
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+  const Card = ({ title, count, link, Icon, bgColor, textColor, delay }) => (
+    <motion.div
+      className={`p-6 ${bgColor} rounded-2xl shadow hover:shadow-lg transition-transform transform hover:scale-105 flex flex-col justify-between min-h-[180px]`}
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.6, delay }}
+    >
+      <div className="flex items-center gap-3 mb-3">
+        <Icon className={`text-3xl ${textColor}`} />
+        <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
+      </div>
+      <div className="flex items-center justify-between">
+        <p className={`text-4xl font-bold ${textColor}`}>
+          <CountUp end={count} duration={1.5} />
+        </p>
         <Link
-          to="/students"
-          className="bg-white shadow p-6 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
+          to={link}
+          className={`text-sm underline font-medium ${textColor} hover:text-opacity-80 transition`}
         >
-          📚 View Students
-        </Link>
-        <Link
-          to="/teachers"
-          className="bg-white shadow p-6 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
-        >
-          👩‍🏫 View Teachers
-        </Link>
-        <Link
-          to="/staffs"
-          className="bg-white shadow p-6 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
-        >
-          👩‍🏫 View Staff
+          View All
         </Link>
       </div>
+    </motion.div>
+  );
 
-      <button
-        onClick={handleLogout}
-        className="mt-8 bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition"
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-16 h-16 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      className="p-6 bg-[#F9FAFB] min-h-screen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Toaster position="top-center" reverseOrder={false} />
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-[#065f46]">Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+        >
+          Logout
+        </button>
+      </div>
+
+      <motion.div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.2,
+            },
+          },
+        }}
       >
-        Logout
-      </button>
-    </div>
-    </>
+        <Card
+          title="Students"
+          count={counts.students}
+          link="/app/students"
+          Icon={FaUserGraduate}
+          bgColor="bg-blue-50"
+          textColor="text-blue-700"
+          delay={0.2}
+        />
+        <Card
+          title="Teachers"
+          count={counts.teachers}
+          link="/app/teachers"
+          Icon={FaChalkboardTeacher}
+          bgColor="bg-green-50"
+          textColor="text-green-700"
+          delay={0.4}
+        />
+        <Card
+          title="Staffs"
+          count={counts.staffs}
+          link="/app/staffs"
+          Icon={FaUserTie}
+          bgColor="bg-yellow-50"
+          textColor="text-yellow-700"
+          delay={0.6}
+        />
+      </motion.div>
+    </motion.div>
   );
 }
 
