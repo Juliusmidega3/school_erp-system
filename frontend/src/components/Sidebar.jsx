@@ -2,9 +2,9 @@ import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast, Toaster } from "react-hot-toast";
-import { Home, Users, UserPlus, BookOpen, Megaphone, LogOut } from "lucide-react";
+import { Home, Users, UserPlus, BookOpen, Megaphone, LogOut, X } from "lucide-react";
 
-function Sidebar() {
+function Sidebar({ onClose }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -26,15 +26,20 @@ function Sidebar() {
     }`;
 
   return (
-    <div className="h-full p-4 bg-[#065f46] flex flex-col justify-between">
+    <div className="h-full w-64 p-4 bg-[#065f46] flex flex-col justify-between relative">
       <Toaster position="top-center" reverseOrder={false} />
 
-      <div className="space-y-8">
-        {/* Logo */}
-        <div className="text-white text-2xl font-bold text-center">
-          Faulu School
-        </div>
+      {/* Close Button for mobile */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-white hover:text-gray-300 lg:hidden"
+        >
+          <X size={24} />
+        </button>
+      )}
 
+      <div className="space-y-8 mt-8">
         {/* Navigation */}
         <nav className="space-y-4">
           <Link to="/app/dashboard" className={linkClasses("dashboard")}>
