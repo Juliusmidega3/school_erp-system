@@ -1,33 +1,41 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/faulu-logo.png"; // <-- update with your correct path
+import { ShieldCheck, GraduationCap, BookOpen } from "lucide-react";
+import logo from "../assets/faulu-logo.png";
 
 function WelcomePage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-      <img src={logo} alt="Faulu School Logo" className="w-32 mb-6" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-300 via-green-100 to-white px-4 py-10">
+      <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-xl text-center border border-green-200">
+        <img
+          src={logo}
+          alt="Faulu School Logo"
+          className="w-48 h-48 object-contain mx-auto mb-6 drop-shadow-md"
+        />
+        <h1 className="text-2xl font-bold text-green-800 mb-2">Welcome to Faulu School</h1>
+        <p className="text-green-600 text-sm mb-10">
+          Select your portal to continue
+        </p>
 
-      <h1 className="text-4xl font-bold text-green-800 mb-8">Welcome to Faulu School System</h1>
+        <div className="space-y-5 text-left">
+          <Link
+            to="/admin-login"
+            className="flex items-center gap-3 px-6 py-4 bg-green-600 text-white rounded-xl font-semibold shadow-md hover:bg-green-700 hover:scale-[1.02] transition-all duration-200"
+          >
+            <ShieldCheck className="w-6 h-6" />
+            Admin Portal
+          </Link>
 
-      <div className="flex flex-col space-y-4 w-full max-w-xs">
-        <Link
-          to="/admin-login"
-          className="w-full bg-green-700 text-white py-3 rounded text-center hover:bg-green-800 transition"
-        >
-          Admin
-        </Link>
-        <button
-          className="w-full bg-green-500 text-white py-3 rounded text-center opacity-70 cursor-not-allowed"
-          disabled
-        >
-          Student
-        </button>
-        <button
-          className="w-full bg-green-500 text-white py-3 rounded text-center opacity-70 cursor-not-allowed"
-          disabled
-        >
-          Teacher
-        </button>
+          <div className="flex items-center gap-3 px-6 py-4 bg-green-100 text-green-400 rounded-xl font-medium shadow-inner cursor-not-allowed">
+            <GraduationCap className="w-6 h-6" />
+            Student Portal (coming soon)
+          </div>
+
+          <div className="flex items-center gap-3 px-6 py-4 bg-green-100 text-green-400 rounded-xl font-medium shadow-inner cursor-not-allowed">
+            <BookOpen className="w-6 h-6" />
+            Teacher Portal (coming soon)
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -66,8 +66,8 @@ const RegisterTeacher = () => {
   };
 
   return (
-    <div>
-      <LogoText />
+    <div className="bg-[#F9FAFB]"> {/* Light background color for the page */}
+      
       {showForm && (
         <div className="mt-10 bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-gray-200">
           <TeacherForm
@@ -78,11 +78,11 @@ const RegisterTeacher = () => {
           />
         </div>
       )}
-      <div className="flex justify-between mt-3 items-center">
-        <h2 className="text-xl font-bold">Teacher List</h2>
+      <div className="flex justify-between mt-6 items-center px-6 sm:px-8">
+        <h2 className="text-2xl font-semibold text-[#065f46]">Teacher List</h2> {/* Dark green for header */}
         <button
           onClick={handleAddNew}
-          className="bg-white shadow p-3 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
+          className="bg-[#065f46] text-white shadow-md p-3 rounded-lg hover:shadow-lg transition transform hover:scale-105 border border-gray-200"
         >
           ➕ Hire a Teacher
         </button>

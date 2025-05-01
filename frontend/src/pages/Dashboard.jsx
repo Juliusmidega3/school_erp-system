@@ -27,7 +27,7 @@ function Dashboard() {
         if (error.response?.status === 401) {
           handleLogout();
         } else {
-          toast.error("An error occurred while fetching data. Please try again.");
+          toast.error("An error occurred while fetching data.");
         }
       } finally {
         setLoading(false);
@@ -51,23 +51,23 @@ function Dashboard() {
 
   const Card = ({ title, count, link, Icon, bgColor, textColor, delay }) => (
     <motion.div
-      className={`p-6 ${bgColor} rounded-2xl shadow hover:shadow-lg transition-transform transform hover:scale-105 flex flex-col justify-between min-h-[180px]`}
+      className={`p-6 ${bgColor} rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 flex flex-col justify-between min-h-[180px]`}
       variants={cardVariants}
       initial="hidden"
       animate="visible"
       transition={{ duration: 0.6, delay }}
     >
-      <div className="flex items-center gap-3 mb-3">
-        <Icon className={`text-3xl ${textColor}`} />
+      <div className="flex items-center gap-4 mb-4">
+        <Icon className={`text-4xl ${textColor}`} />
         <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
       </div>
       <div className="flex items-center justify-between">
-        <p className={`text-4xl font-bold ${textColor}`}>
+        <p className={`text-5xl font-bold ${textColor}`}>
           <CountUp end={count} duration={1.5} />
         </p>
         <Link
           to={link}
-          className={`text-sm underline font-medium ${textColor} hover:text-opacity-80 transition`}
+          className={`text-sm font-medium underline ${textColor} hover:opacity-80 transition`}
         >
           View All
         </Link>
@@ -78,21 +78,22 @@ function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-16 h-16 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
     <motion.div
-      className="p-6 bg-[#F9FAFB] min-h-screen"
+      className="p-6 sm:p-8 bg-[#F9FAFB] min-h-screen"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <Toaster position="top-center" reverseOrder={false} />
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-[#065f46]">Dashboard</h1>
+
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-[#065f46]">Dashboard</h1>
       </div>
 
       <motion.div

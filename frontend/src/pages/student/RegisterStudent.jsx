@@ -66,8 +66,8 @@ const RegisterStudent = () => {
   };
 
   return (
-    <div>
-      <LogoText />
+    <div className="min-h-screen bg-[#f9fafb] text-gray-800">
+      {/* Form Container */}
       {showForm && (
         <div className="mt-10 bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-gray-200">
           <StudentForm
@@ -78,15 +78,19 @@ const RegisterStudent = () => {
           />
         </div>
       )}
+
+      {/* Heading and Add New Button */}
       <div className="flex justify-between mt-3 items-center">
-        <h2 className="text-xl font-bold">Student List</h2>
+        <h2 className="text-2xl font-bold text-[#065f46]">Student List</h2>
         <button
           onClick={handleAddNew}
-          className="bg-white shadow p-3 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
+          className="bg-[#065f46] text-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
         >
-          ➕ Enrol a Student
+          ➕ Enroll a Student
         </button>
       </div>
+
+      {/* Student Table */}
       <StudentTable students={students} onEdit={handleEdit} onDelete={handleDelete} />
     </div>
   );

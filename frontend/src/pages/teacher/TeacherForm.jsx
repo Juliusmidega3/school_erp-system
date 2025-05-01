@@ -9,7 +9,6 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
     phone_number: "",
     marital_status: "",
     date_of_employment: "",
-    
   });
 
   // Populate form if editing
@@ -57,7 +56,7 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           value={formData.first_name}
           onChange={handleChange}
           required
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md focus:ring-[#065f46] focus:border-[#065f46]"
         />
         <input
           type="text"
@@ -66,16 +65,16 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           value={formData.last_name}
           onChange={handleChange}
           required
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md focus:ring-[#065f46] focus:border-[#065f46]"
         />
-        
+
         {/* Gender select dropdown with only Male and Female options */}
         <select
           name="gender"
           value={formData.gender}
           onChange={handleChange}
           required
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md focus:ring-[#065f46] focus:border-[#065f46]"
         >
           <option value="">Select Gender</option>
           <option value="Male">Male</option>
@@ -90,7 +89,7 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           value={formData.email}
           onChange={handleChange}
           required
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md focus:ring-[#065f46] focus:border-[#065f46]"
         />
 
         <input
@@ -100,51 +99,48 @@ const TeacherForm = forwardRef(({ onSubmit, initialData, onCancel }, ref) => {
           value={formData.phone_number}
           onChange={handleChange}
           required
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md focus:ring-[#065f46] focus:border-[#065f46]"
         />
 
-       
-       <select
+        <select
           name="marital_status"
           value={formData.marital_status}
           onChange={handleChange}
           required
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md focus:ring-[#065f46] focus:border-[#065f46]"
         >
           <option value="">Marital Status</option>
           <option value="Single">Single</option>
-          <option value="Married">Married</option> 
-        </select>  
+          <option value="Married">Married</option>
+        </select>
 
         <div>
-            <label className="block mb-1 text-sm text-gray-700" htmlFor="date_of_employment">
-              Date of Employment
-            </label>
-            <input
-              type="date"
-              id="date_of_employment"
-              name="date_of_employment"
-              value={formData.date_of_employment}
-              onChange={handleChange}
-              required
-              className="border p-2 rounded-md w-full"
-            />
+          <label className="block mb-1 text-sm text-gray-700" htmlFor="date_of_employment">
+            Date of Employment
+          </label>
+          <input
+            type="date"
+            id="date_of_employment"
+            name="date_of_employment"
+            value={formData.date_of_employment}
+            onChange={handleChange}
+            required
+            className="border p-2 rounded-md w-full focus:ring-[#065f46] focus:border-[#065f46]"
+          />
         </div>
- 
-        
       </div>
 
       <div className="mt-4 flex justify-between gap-4">
         <button
           onClick={onCancel} // Ensure cancel does not trigger submit
           type="button" // Ensure it's not a form submit button
-          className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+          className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-[#065f46] focus:ring-opacity-50"
         >
           Cancel
         </button>
         <button
           type="submit" // This triggers the form submit
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          className="bg-[#065f46] text-white px-4 py-2 rounded hover:bg-[#054e3c] focus:outline-none focus:ring-2 focus:ring-[#065f46] focus:ring-opacity-50"
         >
           {initialData ? "Update" : "Submit"}
         </button>

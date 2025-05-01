@@ -21,7 +21,7 @@ function StaffList() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-gray-800 font-sans">
-      <LogoText />
+      
       <div className="px-6 py-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold text-[#065f46]">Staff's List</h2>

@@ -60,16 +60,38 @@ const RegisterStaff = () => {
       }
       fetchStaffs();
       setEditStaff(null);
+      setShowForm(false);
     } catch (error) {
       console.error("Error saving staff:", error);
     }
   };
 
   return (
-    <div>
-      <LogoText />
+    <div className="min-h-screen bg-[#F9FAFB] text-gray-800 font-sans p-6">
+      
+
+      <div className="flex justify-between items-center mt-6 mb-4">
+        <h2 className="text-2xl font-semibold text-[#065f46]">Staff Management</h2>
+        <button
+          onClick={handleAddNew}
+          className="bg-white shadow px-4 py-2 rounded-lg hover:shadow-lg border border-gray-200 text-[#065f46] font-medium"
+        >
+          ➕ Hire a Staff
+        </button>
+      </div>
+
+      <div className="mt-4">
+        <StaffTable staffs={staffs} onEdit={handleEdit} onDelete={handleDelete} />
+      </div>
+
       {showForm && (
-        <div className="mt-10 bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-gray-200">
+        <div
+          ref={formRef}
+          className="mt-10 bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-gray-200"
+        >
+          <h3 className="text-xl font-semibold text-[#065f46] mb-4">
+            {editStaff ? "Edit Staff Details" : "Register New Staff"}
+          </h3>
           <StaffForm
             key={editStaff ? editStaff.id : Date.now()}
             initialData={editStaff}
@@ -78,16 +100,6 @@ const RegisterStaff = () => {
           />
         </div>
       )}
-      <div className="flex justify-between mt-3 items-center">
-        <h2 className="text-xl font-bold">Staff List</h2>
-        <button
-          onClick={handleAddNew}
-          className="bg-white shadow p-3 rounded-lg hover:shadow-lg transition border border-gray-200 text-center"
-        >
-          ➕ Hire a Staff
-        </button>
-      </div>
-      <StaffTable staffs={staffs} onEdit={handleEdit} onDelete={handleDelete} />
     </div>
   );
 };

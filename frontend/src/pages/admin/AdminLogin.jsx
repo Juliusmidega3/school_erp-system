@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/faulu-logo.png";
-import axios from "axios";  // Added axios for making API requests
+import axios from "axios";
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -18,11 +18,8 @@ function AdminLogin() {
         password: password,
       });
 
-      // If login is successful, store the access token
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
-      
-      // Navigate to the dashboard page
       navigate("/app/dashboard");
     } catch (err) {
       setError("Invalid credentials. Please try again.");
@@ -30,49 +27,57 @@ function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-      <img src={logo} alt="Faulu School Logo" className="w-24 mb-4" />
-
-      <h1 className="text-2xl font-bold text-green-800 mb-6">Admin Login</h1>
-
-      <form onSubmit={handleLogin} className="bg-white p-6 rounded shadow-md w-full max-w-md">
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-
-        <div className="mb-4">
-          <label className="block mb-1 font-semibold">Username</label>
-          <input
-            type="text"
-            className="w-full border px-3 py-2 rounded"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-              setError("");
-            }}
-            required
-          />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-200 to-green-50 p-6">
+      <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md border border-green-100">
+        <div className="flex flex-col items-center mb-8">
+          <img src={logo} alt="Faulu School Logo" className="w-28 mb-4 drop-shadow" />
+          <h1 className="text-2xl font-bold text-green-800">Admin Login</h1>
+          <p className="text-sm text-gray-500 mt-1">Enter your credentials to continue</p>
         </div>
 
-        <div className="mb-6">
-          <label className="block mb-1 font-semibold">Password</label>
-          <input
-            type="password"
-            className="w-full border px-3 py-2 rounded"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setError("");
-            }}
-            required
-          />
-        </div>
+        <form onSubmit={handleLogin} className="space-y-5">
+          {error && (
+            <div className="bg-red-100 text-red-700 text-sm p-3 rounded-lg border border-red-300">
+              {error}
+            </div>
+          )}
 
-        <button
-          type="submit"
-          className="w-full bg-green-700 text-white py-2 rounded hover:bg-green-800 transition"
-        >
-          Login
-        </button>
-      </form>
+          <div>
+            <label className="block mb-1 text-sm font-semibold text-green-700">Username</label>
+            <input
+              type="text"
+              className="w-full px-4 py-2 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setError("");
+              }}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm font-semibold text-green-700">Password</label>
+            <input
+              type="password"
+              className="w-full px-4 py-2 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError("");
+              }}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg shadow transition-all duration-200"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
