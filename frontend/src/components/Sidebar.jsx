@@ -3,15 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import logo from "../assets/faulu-logo.png";
 import { toast, Toaster } from "react-hot-toast";
-import {
-  Home,
-  Users,
-  UserPlus,
-  BookOpen,
-  Megaphone,
-  LogOut,
-  X,
-} from "lucide-react";
+import { X } from "lucide-react"; // Keep 'X' for close button
 
 function Sidebar({ onClose }) {
   const navigate = useNavigate();
@@ -56,7 +48,7 @@ function Sidebar({ onClose }) {
         {/* Navigation */}
         <nav className="space-y-2">
           <Link to="/app/dashboard" className={linkClasses("dashboard")}>
-            <Home size={20} />
+            <span className="text-lg">🏠</span>
             <span>Dashboard</span>
           </Link>
 
@@ -66,17 +58,17 @@ function Sidebar({ onClose }) {
 
           <div className="space-y-1 pl-1">
             <Link to="/app/students" className={linkClasses("students")}>
-              <BookOpen size={20} />
+              <span className="text-lg">📘</span>
               <span>Students</span>
             </Link>
 
             <Link to="/app/teachers" className={linkClasses("teachers")}>
-              <UserPlus size={20} />
+              <span className="text-lg">🧑‍🏫</span>
               <span>Teachers</span>
             </Link>
 
             <Link to="/app/staffs" className={linkClasses("staffs")}>
-              <Users size={20} />
+              <span className="text-lg">👥</span>
               <span>Staff</span>
             </Link>
 
@@ -84,7 +76,7 @@ function Sidebar({ onClose }) {
               to="/app/announcements"
               className={linkClasses("announcements")}
             >
-              <Megaphone size={20} />
+              <span className="text-lg">📢</span>
               <span>Announcements</span>
             </Link>
           </div>
@@ -98,7 +90,7 @@ function Sidebar({ onClose }) {
         whileTap={{ scale: 0.97 }}
         className="mt-6 bg-red-500 hover:bg-red-600 text-white flex items-center justify-center gap-2 py-2 px-4 rounded-xl font-medium shadow-md"
       >
-        <LogOut size={18} />
+        <span className="text-lg">🚪</span>
         Logout
       </motion.button>
     </div>

@@ -4,11 +4,21 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 import { toast, Toaster } from "react-hot-toast";
-import { FaUserGraduate, FaChalkboardTeacher, FaUserTie } from "react-icons/fa";
+
+// Simple Emoji Icon component
+const EmojiIcon = ({ symbol, label }) => (
+  <span role="img" aria-label={label} className="text-4xl">
+    {symbol}
+  </span>
+);
 
 function Dashboard() {
   const navigate = useNavigate();
-  const [counts, setCounts] = useState({ students: 0, teachers: 0, staffs: 0 });
+  const [counts, setCounts] = useState({
+    students: 0,
+    teachers: 0,
+    staffs: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,7 +59,7 @@ function Dashboard() {
     visible: { opacity: 1, y: 0 },
   };
 
-  const Card = ({ title, count, link, Icon, bgColor, textColor, delay }) => (
+  const Card = ({ title, count, link, icon, bgColor, textColor, delay }) => (
     <motion.div
       className={`p-6 ${bgColor} rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 flex flex-col justify-between min-h-[180px]`}
       variants={cardVariants}
@@ -58,12 +68,12 @@ function Dashboard() {
       transition={{ duration: 0.6, delay }}
     >
       <div className="flex items-center gap-4 mb-4">
-        <Icon className={`text-4xl ${textColor}`} />
+        {icon}
         <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
       </div>
       <div className="flex items-center justify-between">
         <p className={`text-5xl font-bold ${textColor}`}>
-          <CountUp end={count} duration={1.5} />
+          <CountUp end={count ?? 0} duration={1.5} />
         </p>
         <Link
           to={link}
@@ -97,7 +107,7 @@ function Dashboard() {
       </div>
 
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         initial="hidden"
         animate="visible"
         variants={{
@@ -112,7 +122,7 @@ function Dashboard() {
           title="Students"
           count={counts.students}
           link="/app/students"
-          Icon={FaUserGraduate}
+          icon={<EmojiIcon symbol="🎓" label="Students" />}
           bgColor="bg-blue-50"
           textColor="text-blue-700"
           delay={0.2}
@@ -121,7 +131,7 @@ function Dashboard() {
           title="Teachers"
           count={counts.teachers}
           link="/app/teachers"
-          Icon={FaChalkboardTeacher}
+          icon={<EmojiIcon symbol="👨‍🏫" label="Teachers" />}
           bgColor="bg-green-50"
           textColor="text-green-700"
           delay={0.4}
@@ -130,10 +140,19 @@ function Dashboard() {
           title="Staffs"
           count={counts.staffs}
           link="/app/staffs"
-          Icon={FaUserTie}
+          icon={<EmojiIcon symbol="🧑‍💼" label="Staffs" />}
           bgColor="bg-yellow-50"
           textColor="text-yellow-700"
           delay={0.6}
+        />
+        <Card
+          title="Fees"
+          count={null}
+          link="/app/fees"
+          icon={<EmojiIcon symbol="💳" label="Fees" />}
+          bgColor="bg-purple-50"
+          textColor="text-purple-700"
+          delay={0.8}
         />
       </motion.div>
     </motion.div>

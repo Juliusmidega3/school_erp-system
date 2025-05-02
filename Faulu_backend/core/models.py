@@ -1,8 +1,11 @@
 from django.db import models
 
+# =======================
+# Student Model
+# =======================
 class Student(models.Model):
     GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]    
-    ENROLLED_CLASS= [
+    ENROLLED_CLASS = [
         ('PP1', 'PP1'),
         ('PP2', 'PP2'),
         ('Grade 1', 'Grade 1'),
@@ -10,7 +13,6 @@ class Student(models.Model):
         ('Grade 3', 'Grade 3'),
         ('Grade 4', 'Grade 4'),
         ('Grade 5', 'Grade 5'),
-      
     ]
 
     first_name = models.CharField(max_length=100)
@@ -22,11 +24,12 @@ class Student(models.Model):
     enrolled_class = models.CharField(max_length=10, choices=ENROLLED_CLASS)  
     admission_number = models.CharField(max_length=5)
 
-
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-    
-    
+
+# =======================
+# Teacher Model
+# =======================
 class Teacher(models.Model):
     GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
     MARITAL_STATUS_CHOICES = [('Single', 'Single'), ('Married', 'Married')]
@@ -41,8 +44,10 @@ class Teacher(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-    
-    
+
+# =======================
+# Staff Model
+# =======================
 class Staff(models.Model):
     GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
     MARITAL_STATUS_CHOICES = [('Single', 'Single'), ('Married', 'Married')]
@@ -68,24 +73,43 @@ class Staff(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-    
-    
-from rest_framework import viewsets
+
+# =======================
+# Fee Structure Models
+# =======================
+class FeeStructureClass(models.Model):
+    CLASS_CHOICES = [
+        ('PP1', 'PP1'),
+        ('PP2', 'PP2'),
+        ('Grade 1', 'Grade 1'),
+        ('Grade 2', 'Grade 2'),
+        ('Grade 3', 'Grade 3'),
+        ('Grade 4', 'Grade 4'),
+        ('Grade 5', 'Grade 5'),
+    ]
+    name = models.CharField(max_length=20, choices=CLASS_CHOICES, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
-from .models import Student, Teacher, Staff
-from .serializers import StudentSerializer, TeacherSerializer, StaffSerializer
+class TermFee(models.Model):
+    TERM_CHOICES = [
+        ('Term 1', 'Term 1'),
+        ('Term 2', 'Term 2'),
+        ('Term 3', 'Term 3'),
+    ]
+    fee_class = models.ForeignKey(FeeStructureClass, related_name='terms', on_delete=models.CASCADE)
+    term = models.CharField(max_length=10, choices=TERM_CHOICES)
 
-# CRUD for models
-class StudentViewSet(viewsets.ModelViewSet):
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
+    def __str__(self):
+        return f"{self.fee_class.name} - {self.term}"
 
-class TeacherViewSet(viewsets.ModelViewSet):
-    queryset = Teacher.objects.all()
-    serializer_class = TeacherSerializer
 
-class StaffViewSet(viewsets.ModelViewSet):
-    queryset = Staff.objects.all()
-    serializer_class = StaffSerializer
+class FeeItem(models.Model):
+    term_fee = models.ForeignKey(TermFee, related_name='items', on_delete=models.CASCADE)
+    category = models.CharField(max_length=100)
+    amount = models.PositiveIntegerField()
 
+    def __str__(self):
+        return f"{self.term_fee.fee_class.name} - {self.term_fee.term} - {self.category}"

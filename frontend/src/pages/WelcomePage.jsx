@@ -10,7 +10,7 @@ function WelcomePage() {
         <img
           src={logo}
           alt="Faulu School Logo"
-          className="w-48 h-48 object-contain mx-auto mb-6 drop-shadow-md"
+          className="w-60 h-60 object-contain mx-auto mb-6 drop-shadow-md"
         />
         <h1 className="text-2xl font-bold text-green-800 mb-2">Welcome to Faulu School</h1>
         <p className="text-green-600 text-sm mb-10">

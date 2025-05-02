@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Pages
 import WelcomePage from "./pages/WelcomePage";
-import AdminLogin from "./pages/admin/AdminLogin"
+import AdminLogin from "./pages/admin/AdminLogin";
 import RegisterStaff from "./pages/staff/RegisterStaff";
 import StaffList from "./pages/staff/StaffList";
 import RegisterStudent from "./pages/student/RegisterStudent";
@@ -13,6 +13,12 @@ import TeacherList from "./pages/teacher/TeacherList";
 import Dashboard from "./pages/Dashboard";
 import Announcements from "./pages/announcements/Announcements";
 
+// Fees Pages
+import FeesDashboard from "./pages/fees/FeesDashboard";
+import AddPayment from "./pages/fees/AddPayment";
+import FeeStructure from "./pages/fees/FeeStructure";
+import StudentFeeProfile from "./pages/fees/StudentFeeProfile";
+
 // Layout & Route Guards
 import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./components/MainLayout";
@@ -21,10 +27,9 @@ function App() {
   return (
     <Router>
       <Routes>
-
         {/* Public Routes */}
         <Route path="/" element={<WelcomePage />} />
-        <Route path="/admin-login" element={<AdminLogin />} /> {/* <-- new */}
+        <Route path="/admin-login" element={<AdminLogin />} />
 
         {/* Protected Routes */}
         <Route
@@ -43,6 +48,12 @@ function App() {
           <Route path="teachers" element={<TeacherList />} />
           <Route path="teachers/register" element={<RegisterTeacher />} />
           <Route path="announcements" element={<Announcements />} />
+
+          {/* Fees Routes */}
+          <Route path="fees" element={<FeesDashboard />} />
+          <Route path="fees/add-payment" element={<AddPayment />} />
+          <Route path="fees/structure" element={<FeeStructure />} />
+          <Route path="fees/student/:studentId" element={<StudentFeeProfile />} />
         </Route>
 
         {/* 404 fallback */}
