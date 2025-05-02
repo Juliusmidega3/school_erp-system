@@ -27,6 +27,7 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+
 # =======================
 # Teacher Model
 # =======================
@@ -44,6 +45,7 @@ class Teacher(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
 
 # =======================
 # Staff Model
@@ -74,6 +76,7 @@ class Staff(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+
 # =======================
 # Fee Structure Models
 # =======================
@@ -92,6 +95,9 @@ class FeeStructureClass(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 
 class TermFee(models.Model):
     TERM_CHOICES = [
@@ -105,6 +111,10 @@ class TermFee(models.Model):
     def __str__(self):
         return f"{self.fee_class.name} - {self.term}"
 
+    class Meta:
+        unique_together = ('fee_class', 'term')
+        ordering = ['fee_class__name', 'term']
+
 
 class FeeItem(models.Model):
     term_fee = models.ForeignKey(TermFee, related_name='items', on_delete=models.CASCADE)
@@ -113,3 +123,7 @@ class FeeItem(models.Model):
 
     def __str__(self):
         return f"{self.term_fee.fee_class.name} - {self.term_fee.term} - {self.category}"
+
+    class Meta:
+        unique_together = ('term_fee', 'category')
+        ordering = ['term_fee__fee_class__name', 'term_fee__term', 'category']

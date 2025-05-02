@@ -45,6 +45,6 @@ class StaffViewSet(viewsets.ModelViewSet):
 
 
 class FeeStructureClassViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = FeeStructureClass.objects.prefetch_related('terms__fee_items')
+    queryset = FeeStructureClass.objects.prefetch_related('terms__items')
     serializer_class = FeeStructureClassSerializer
     permission_classes = [IsAuthenticated]

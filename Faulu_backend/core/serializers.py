@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from .models import Student, Teacher, Staff, FeeStructureClass, TermFee, FeeItem
 
-
-
-# Model serializers
+# ================
+# Unchanged Serializers
+# ================
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
@@ -20,10 +20,14 @@ class StaffSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# ================
+# Fee Structure Serializers
+# ================
 class FeeItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeeItem
         fields = ['category', 'amount']
+
 
 class TermFeeSerializer(serializers.ModelSerializer):
     items = FeeItemSerializer(many=True, read_only=True)
@@ -32,16 +36,10 @@ class TermFeeSerializer(serializers.ModelSerializer):
         model = TermFee
         fields = ['term', 'items']
 
+
 class FeeStructureClassSerializer(serializers.ModelSerializer):
-    term_fees = serializers.SerializerMethodField()
+    terms = TermFeeSerializer(many=True, read_only=True)
 
     class Meta:
         model = FeeStructureClass
-        fields = ['name', 'term_fees']
-
-    def get_term_fees(self, obj):
-        terms = obj.terms.all()
-        term_dict = {}
-        for term in terms:
-            term_dict[term.term] = FeeItemSerializer(term.items.all(), many=True).data
-        return term_dict
+        fields = ['name', 'terms']
