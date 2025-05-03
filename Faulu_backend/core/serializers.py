@@ -17,9 +17,15 @@ class StaffSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class FeeStructureSerializer(serializers.ModelSerializer):
+    total_fee = serializers.SerializerMethodField()
+
     class Meta:
         model = FeeStructure
         fields = '__all__'
+
+    def get_total_fee(self, obj):
+        return obj.total_fee
+
 
 # ✅ Add class list serializer for CLASS_CHOICES
 class ClassListSerializer(serializers.Serializer):
