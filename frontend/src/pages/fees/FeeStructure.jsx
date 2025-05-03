@@ -1,164 +1,129 @@
-import React, { useEffect, useRef, useState } from "react";
-import axiosInstance from "../../utils/axiosInstance";
-import html2pdf from "html2pdf.js";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function FeeStructure() {
-  const [feeData, setFeeData] = useState([]);
-  const [selectedClass, setSelectedClass] = useState("PP1");
+  const [structure, setStructure] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [selectedClass, setSelectedClass] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const printRef = useRef();
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axiosInstance
-      .get("/fees/structure/")
-      .then((res) => {
-        console.log("Fee data:", res.data); // Log the data for debugging
-        setFeeData(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching fee data:", err);
-        setError("Failed to load fee structure.");
-        setLoading(false);
-      });
-  }, []);
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
 
-  const handleDownload = () => {
-    const element = printRef.current;
-    const opt = {
-      margin: 0.5,
-      filename: `${selectedClass.replace(/\s/g, "_")}_Fee_Structure.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    const fetchData = async () => {
+      try {
+        const [structureRes, classRes] = await Promise.all([
+          axios.get("http://localhost:8000/api/fees/structure/", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get("http://localhost:8000/api/classes/", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+        setStructure(structureRes.data);
+        setClasses(classRes.data);
+        setSelectedClass(classRes.data[0]?.id || "");
+      } catch (err) {
+        setError("Failed to fetch data.");
+      } finally {
+        setLoading(false);
+      }
     };
-    html2pdf().set(opt).from(element).save();
+
+    fetchData();
+  }, [navigate]);
+
+  const groupByTerm = (className) => {
+    const terms = ["Term 1", "Term 2", "Term 3"];
+    const dataByTerm = {};
+
+    terms.forEach(term => {
+      const item = structure.find(s => s.class_name === className && s.term === term);
+      dataByTerm[term] = item || {
+        tuition: 0,
+        lunch: 0,
+        transport: 0,
+        activity: 0,
+        development: 0,
+        total_fee: 0
+      };
+    });
+
+    return dataByTerm;
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const currentDate = new Date().toLocaleDateString("en-KE", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
-  // Find selected class data from feeData
-  const selectedClassData = feeData.find((cls) => cls.name === selectedClass);
-  console.log("Selected class data:", selectedClassData); // Log selected class data
-
-  const structure = selectedClassData
-    ? Object.entries(selectedClassData.term_fees).map(([term, items]) => ({
-        term,
-        items,
-      }))
-    : [];
-
-  const currencyFormatter = new Intl.NumberFormat("en-KE", {
-    style: "currency",
-    currency: "KES",
-    minimumFractionDigits: 0,
-  });
-
-  const total = structure.reduce((acc, item) => {
-    return acc + item.items.reduce((t, x) => t + Number(x.amount), 0);
-  }, 0);
+  const feeFields = ["tuition", "lunch", "transport", "activity", "development"];
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-green-800">Fee Structure</h2>
-        <select
-          value={selectedClass}
-          onChange={(e) => setSelectedClass(e.target.value)}
-          className="border rounded p-2 bg-white"
-        >
-          {feeData.map((grade) => (
-            <option key={grade.name} value={grade.name}>
-              {grade.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <h2 className="text-3xl font-bold text-green-800 mb-6">Fee Structure</h2>
+
+      {error && <div className="text-red-600 mb-4">{error}</div>}
 
       {loading ? (
-        <p className="text-gray-600">Loading fee structure...</p>
-      ) : error ? (
-        <p className="text-red-600">{error}</p>
+        <p>Loading fee structure...</p>
       ) : (
         <>
-          {/* Printable Section */}
-          <div ref={printRef} className="bg-white p-6 rounded shadow">
-            {/* School Header */}
-            <div className="text-center mb-6 border-b pb-4">
-              <img src="/logo.png" alt="Logo" className="mx-auto h-20 mb-2" />
-              <h1 className="text-2xl font-bold text-green-900">Faulu School</h1>
-              <p className="text-sm text-gray-600 italic">
-                Empowering Learners for Tomorrow
-              </p>
-              <p className="text-xs text-gray-500 mt-2">
-                Generated on: {currentDate}
-              </p>
-            </div>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Class:
+            </label>
+            <select
+              className="border p-2 rounded w-full max-w-xs"
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}
+            >
+              {classes.map((cls) => (
+                <option key={cls.id} value={cls.id}>
+                  {cls.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-            <h3 className="text-lg font-semibold mb-2 text-green-700">
-              Fee Structure for {selectedClass}
-            </h3>
-
-            {structure.length > 0 ? (
-              structure.map((term, termIndex) => (
-                <div key={`${selectedClass}-${term.term}-${termIndex}`} className="mb-4">
-                  <h4 className="font-bold text-md mb-2 text-gray-700">{term.term}</h4>
-                  <table className="w-full border border-gray-300 mb-2 text-sm">
-                    <thead className="bg-green-700 text-white">
-                      <tr>
-                        <th className="p-2 text-left">Category</th>
-                        <th className="p-2 text-right">Amount (KES)</th>
+          {selectedClass && (
+            <div className="bg-white p-4 shadow rounded-lg">
+              <h3 className="text-xl font-semibold text-green-700 mb-4">
+                Class: {selectedClass}
+              </h3>
+              <table className="min-w-full border text-sm">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="text-left p-2">Fee Type</th>
+                    <th className="text-right p-2">Term 1</th>
+                    <th className="text-right p-2">Term 2</th>
+                    <th className="text-right p-2">Term 3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {feeFields.map((field) => {
+                    const grouped = groupByTerm(selectedClass);
+                    return (
+                      <tr key={field} className="border-t">
+                        <td className="p-2 capitalize">{field}</td>
+                        <td className="p-2 text-right">{grouped["Term 1"][field]}</td>
+                        <td className="p-2 text-right">{grouped["Term 2"][field]}</td>
+                        <td className="p-2 text-right">{grouped["Term 3"][field]}</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {term.items.map((item, idx) => (
-                        <tr
-                          key={`${selectedClass}-${term.term}-${item.category}-${idx}`}
-                          className="border-t"
-                        >
-                          <td className="p-2">{item.category}</td>
-                          <td className="p-2 text-right">
-                            {currencyFormatter.format(Number(item.amount))}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ))
-            ) : (
-              <p className="text-red-600">No fee structure available for this class.</p>
-            )}
-
-            <div className="font-bold text-right text-green-800">
-              Total per Year: {currencyFormatter.format(total)}
+                    );
+                  })}
+                  <tr className="font-bold border-t bg-gray-50">
+                    <td className="p-2 text-green-800">Total</td>
+                    <td className="p-2 text-right text-green-800">{groupByTerm(selectedClass)["Term 1"].total_fee}</td>
+                    <td className="p-2 text-right text-green-800">{groupByTerm(selectedClass)["Term 2"].total_fee}</td>
+                    <td className="p-2 text-right text-green-800">{groupByTerm(selectedClass)["Term 3"].total_fee}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="mt-6 flex justify-end gap-4">
-            <button
-              onClick={handleDownload}
-              className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
-            >
-              Download PDF
-            </button>
-            <button
-              onClick={handlePrint}
-              className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800"
-            >
-              Print
-            </button>
-          </div>
+          )}
         </>
       )}
     </div>

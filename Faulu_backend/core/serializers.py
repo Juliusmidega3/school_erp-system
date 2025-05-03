@@ -1,9 +1,6 @@
 from rest_framework import serializers
-from .models import Student, Teacher, Staff, FeeStructureClass, TermFee, FeeItem
+from .models import Student, Teacher, Staff, FeeStructure
 
-# ================
-# Unchanged Serializers
-# ================
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
@@ -19,27 +16,12 @@ class StaffSerializer(serializers.ModelSerializer):
         model = Staff
         fields = '__all__'
 
-
-# ================
-# Fee Structure Serializers
-# ================
-class FeeItemSerializer(serializers.ModelSerializer):
+class FeeStructureSerializer(serializers.ModelSerializer):
     class Meta:
-        model = FeeItem
-        fields = ['category', 'amount']
+        model = FeeStructure
+        fields = '__all__'
 
-
-class TermFeeSerializer(serializers.ModelSerializer):
-    items = FeeItemSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = TermFee
-        fields = ['term', 'items']
-
-
-class FeeStructureClassSerializer(serializers.ModelSerializer):
-    terms = TermFeeSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = FeeStructureClass
-        fields = ['name', 'terms']
+# ✅ Add class list serializer for CLASS_CHOICES
+class ClassListSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    name = serializers.CharField()

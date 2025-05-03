@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Student, Teacher, Staff
+from .models import Student, Teacher, Staff, FeeStructure
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
@@ -18,3 +18,20 @@ class StaffAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'role', 'email', 'phone_number', 'date_of_employment')
     search_fields = ('first_name', 'last_name', 'email', 'role')
     list_filter = ('role', 'gender', 'marital_status')
+
+@admin.register(FeeStructure)
+class FeeStructureAdmin(admin.ModelAdmin):
+    list_display = (
+        'class_name', 'term',
+        'tuition', 'lunch', 'transport',
+        'activity', 'development',
+        'total_fee'
+    )
+    search_fields = ('class_name',)
+    list_filter = ('class_name', 'term')
+
+    @admin.display(description='Total Fee (Ksh)')
+    def total_fee(self, obj):
+        return (
+            obj.tuition + obj.lunch + obj.transport + obj.activity + obj.development
+        )

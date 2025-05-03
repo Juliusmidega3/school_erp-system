@@ -1,40 +1,45 @@
 from django.db import models
 
 # =======================
+# Shared Choices
+# =======================
+GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
+MARITAL_STATUS_CHOICES = [('Single', 'Single'), ('Married', 'Married')]
+CLASS_CHOICES = [
+    ('PP1', 'PP1'),
+    ('PP2', 'PP2'),
+    ('Grade 1', 'Grade 1'),
+    ('Grade 2', 'Grade 2'),
+    ('Grade 3', 'Grade 3'),
+    ('Grade 4', 'Grade 4'),
+    ('Grade 5', 'Grade 5'),
+]
+TERM_CHOICES = [
+    ('Term 1', 'Term 1'),
+    ('Term 2', 'Term 2'),
+    ('Term 3', 'Term 3'),
+]
+
+# =======================
 # Student Model
 # =======================
 class Student(models.Model):
-    GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]    
-    ENROLLED_CLASS = [
-        ('PP1', 'PP1'),
-        ('PP2', 'PP2'),
-        ('Grade 1', 'Grade 1'),
-        ('Grade 2', 'Grade 2'),
-        ('Grade 3', 'Grade 3'),
-        ('Grade 4', 'Grade 4'),
-        ('Grade 5', 'Grade 5'),
-    ]
-
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     parent_name = models.CharField(max_length=20)
     parent_phone = models.CharField(max_length=20)
-    enrolled_class = models.CharField(max_length=10, choices=ENROLLED_CLASS)  
+    enrolled_class = models.CharField(max_length=10, choices=CLASS_CHOICES)
     admission_number = models.CharField(max_length=5)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
 # =======================
 # Teacher Model
 # =======================
 class Teacher(models.Model):
-    GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
-    MARITAL_STATUS_CHOICES = [('Single', 'Single'), ('Married', 'Married')]
-
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
@@ -46,13 +51,10 @@ class Teacher(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
 # =======================
 # Staff Model
 # =======================
 class Staff(models.Model):
-    GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
-    MARITAL_STATUS_CHOICES = [('Single', 'Single'), ('Married', 'Married')]
     ROLE_CHOICES = [
         ('Security', 'Security'),
         ('Cook', 'Cook'),
@@ -76,54 +78,21 @@ class Staff(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
 # =======================
-# Fee Structure Models
+# Fee Structure Model
 # =======================
-class FeeStructureClass(models.Model):
-    CLASS_CHOICES = [
-        ('PP1', 'PP1'),
-        ('PP2', 'PP2'),
-        ('Grade 1', 'Grade 1'),
-        ('Grade 2', 'Grade 2'),
-        ('Grade 3', 'Grade 3'),
-        ('Grade 4', 'Grade 4'),
-        ('Grade 5', 'Grade 5'),
-    ]
-    name = models.CharField(max_length=20, choices=CLASS_CHOICES, unique=True)
+class FeeStructure(models.Model):
+    class_name = models.CharField(max_length=20, choices=CLASS_CHOICES)
+    term = models.CharField(max_length=20, choices=TERM_CHOICES, default='Term 1')
+    tuition = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    lunch = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    transport = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    activity = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    development = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return self.name
+        return f"{self.class_name} - {self.term}"
 
-    class Meta:
-        ordering = ['name']
-
-
-class TermFee(models.Model):
-    TERM_CHOICES = [
-        ('Term 1', 'Term 1'),
-        ('Term 2', 'Term 2'),
-        ('Term 3', 'Term 3'),
-    ]
-    fee_class = models.ForeignKey(FeeStructureClass, related_name='terms', on_delete=models.CASCADE)
-    term = models.CharField(max_length=10, choices=TERM_CHOICES)
-
-    def __str__(self):
-        return f"{self.fee_class.name} - {self.term}"
-
-    class Meta:
-        unique_together = ('fee_class', 'term')
-        ordering = ['fee_class__name', 'term']
-
-
-class FeeItem(models.Model):
-    term_fee = models.ForeignKey(TermFee, related_name='items', on_delete=models.CASCADE)
-    category = models.CharField(max_length=100)
-    amount = models.PositiveIntegerField()
-
-    def __str__(self):
-        return f"{self.term_fee.fee_class.name} - {self.term_fee.term} - {self.category}"
-
-    class Meta:
-        unique_together = ('term_fee', 'category')
-        ordering = ['term_fee__fee_class__name', 'term_fee__term', 'category']
+    @property
+    def total_fee(self):
+        return self.tuition + self.lunch + self.transport + self.activity + self.development
