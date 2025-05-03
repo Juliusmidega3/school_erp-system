@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
 
 function FeeStructure() {
   const [structure, setStructure] = useState([]);
@@ -9,6 +10,12 @@ function FeeStructure() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const printRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    documentTitle: "Fee Structure",
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -85,7 +92,7 @@ function FeeStructure() {
           <p className="text-center text-gray-600">Loading fee structure...</p>
         ) : (
           <>
-            <div className="mb-8">
+            <div className="mb-6">
               <label className="block text-md font-medium text-gray-700 mb-2">
                 Select Class:
               </label>
@@ -103,54 +110,66 @@ function FeeStructure() {
             </div>
 
             {selectedClass && (
-              <div className="bg-white p-6 shadow-xl rounded-2xl border border-green-100">
-                <h3 className="text-2xl font-bold text-green-700 mb-6">
-                  Class: <span className="font-normal">{selectedClass}</span>
-                </h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full table-auto border text-sm text-gray-700">
-                    <thead>
-                      <tr className="bg-green-100 text-green-800">
-                        <th className="text-left p-3">Fee Type</th>
-                        <th className="text-right p-3">Term 1</th>
-                        <th className="text-right p-3">Term 2</th>
-                        <th className="text-right p-3">Term 3</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {feeFields.map((field, idx) => (
-                        <tr
-                          key={field}
-                          className={idx % 2 === 0 ? "bg-gray-50" : "bg-white"}
-                        >
-                          <td className="p-3 capitalize font-medium">{field}</td>
-                          <td className="p-3 text-right">
-                            {Math.round(groupedFees["Term 1"]?.[field] || 0).toLocaleString()}
+              <>
+                <div ref={printRef} className="bg-white p-6 shadow-xl rounded-2xl border border-green-100">
+                  <h3 className="text-2xl font-bold text-green-700 mb-6">
+                    Class: <span className="font-normal">{selectedClass}</span>
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full table-auto border text-sm text-gray-700">
+                      <thead>
+                        <tr className="bg-green-100 text-green-800">
+                          <th className="text-left p-3">Fee Type</th>
+                          <th className="text-right p-3">Term 1</th>
+                          <th className="text-right p-3">Term 2</th>
+                          <th className="text-right p-3">Term 3</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {feeFields.map((field, idx) => (
+                          <tr
+                            key={field}
+                            className={idx % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                          >
+                            <td className="p-3 capitalize font-medium">{field}</td>
+                            <td className="p-3 text-right">
+                              {Math.round(groupedFees["Term 1"]?.[field] || 0).toLocaleString()}
+                            </td>
+                            <td className="p-3 text-right">
+                              {Math.round(groupedFees["Term 2"]?.[field] || 0).toLocaleString()}
+                            </td>
+                            <td className="p-3 text-right">
+                              {Math.round(groupedFees["Term 3"]?.[field] || 0).toLocaleString()}
+                            </td>
+                          </tr>
+                        ))}
+                        <tr className="font-bold bg-green-50 border-t">
+                          <td className="p-3 text-green-800">Total</td>
+                          <td className="p-3 text-right text-green-800">
+                            {Math.round(groupedFees["Term 1"]?.total_fee || 0).toLocaleString()}
                           </td>
-                          <td className="p-3 text-right">
-                            {Math.round(groupedFees["Term 2"]?.[field] || 0).toLocaleString()}
+                          <td className="p-3 text-right text-green-800">
+                            {Math.round(groupedFees["Term 2"]?.total_fee || 0).toLocaleString()}
                           </td>
-                          <td className="p-3 text-right">
-                            {Math.round(groupedFees["Term 3"]?.[field] || 0).toLocaleString()}
+                          <td className="p-3 text-right text-green-800">
+                            {Math.round(groupedFees["Term 3"]?.total_fee || 0).toLocaleString()}
                           </td>
                         </tr>
-                      ))}
-                      <tr className="font-bold bg-green-50 border-t">
-                        <td className="p-3 text-green-800">Total</td>
-                        <td className="p-3 text-right text-green-800">
-                          {Math.round(groupedFees["Term 1"]?.total_fee || 0).toLocaleString()}
-                        </td>
-                        <td className="p-3 text-right text-green-800">
-                          {Math.round(groupedFees["Term 2"]?.total_fee || 0).toLocaleString()}
-                        </td>
-                        <td className="p-3 text-right text-green-800">
-                          {Math.round(groupedFees["Term 3"]?.total_fee || 0).toLocaleString()}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+
+                {/* Print Button */}
+                <div className="mt-6 text-right">
+                  <button
+                    onClick={handlePrint}
+                    className="px-6 py-2 bg-green-700 text-white rounded-full hover:bg-green-800 transition"
+                  >
+                    Export as PDF / Print
+                  </button>
+                </div>
+              </>
             )}
           </>
         )}
