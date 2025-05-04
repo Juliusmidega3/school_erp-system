@@ -23,6 +23,10 @@ import StudentFeeProfile from "./pages/fees/StudentFeeProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./components/MainLayout";
 
+// Student Portal
+import StudentLogin from "./pages/student/StudentLogin";
+import StudentDashboard from "./pages/student/StudentDashboard";
+
 function App() {
   return (
     <Router>
@@ -30,8 +34,10 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<WelcomePage />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/student-login" element={<StudentLogin />} />
+        <Route path="/student/dashboard" element={<StudentDashboard />} />
 
-        {/* Protected Routes */}
+        {/* Protected Admin Routes */}
         <Route
           path="/app"
           element={

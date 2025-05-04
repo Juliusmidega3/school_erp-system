@@ -1,4 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+from django.contrib.auth.hashers import make_password, check_password
 
 # =======================
 # Shared Choices
@@ -21,20 +26,41 @@ TERM_CHOICES = [
 ]
 
 # =======================
+# Validators
+# =======================
+phone_validator = RegexValidator(
+    regex=r'^\+?\d{9,15}$',
+    message="Enter a valid phone number (9 to 15 digits, optional +)."
+)
+
+def validate_past_date(value):
+    if value > timezone.now().date():
+        raise ValidationError("Date cannot be in the future.")
+
+# =======================
 # Student Model
 # =======================
 class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(validators=[validate_past_date])
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    parent_name = models.CharField(max_length=20)
-    parent_phone = models.CharField(max_length=20)
-    enrolled_class = models.CharField(max_length=10, choices=CLASS_CHOICES)
-    admission_number = models.CharField(max_length=5)
+    parent_name = models.CharField(max_length=100)
+    parent_phone = models.CharField(max_length=20, validators=[phone_validator])
+    enrolled_class = models.CharField(max_length=20, choices=CLASS_CHOICES)
+    admission_number = models.CharField(max_length=5, unique=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    def check_password(self, raw_password):
+        return self.user.check_password(raw_password)
+
+    def set_password(self, raw_password):
+        self.user.set_password(raw_password)
+        self.user.save()
 
 # =======================
 # Teacher Model
@@ -44,9 +70,9 @@ class Teacher(models.Model):
     last_name = models.CharField(max_length=100)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=20, validators=[phone_validator])
     marital_status = models.CharField(max_length=10, choices=MARITAL_STATUS_CHOICES)
-    date_of_employment = models.DateField()
+    date_of_employment = models.DateField(validators=[validate_past_date])
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -70,10 +96,10 @@ class Staff(models.Model):
     last_name = models.CharField(max_length=100)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=20, validators=[phone_validator])
     marital_status = models.CharField(max_length=10, choices=MARITAL_STATUS_CHOICES)
     role = models.CharField(max_length=50, choices=ROLE_CHOICES)
-    date_of_employment = models.DateField()
+    date_of_employment = models.DateField(validators=[validate_past_date])
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -82,7 +108,7 @@ class Staff(models.Model):
 # Fee Structure Model
 # =======================
 class FeeStructure(models.Model):
-    class_name = models.CharField(max_length=20, choices=CLASS_CHOICES)
+    enrolled_class = models.CharField(max_length=20, choices=CLASS_CHOICES)
     term = models.CharField(max_length=20, choices=TERM_CHOICES, default='Term 1')
     tuition = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     lunch = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -91,7 +117,7 @@ class FeeStructure(models.Model):
     development = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return f"{self.class_name} - {self.term}"
+        return f"{self.enrolled_class} - {self.term}"
 
     @property
     def total_fee(self):

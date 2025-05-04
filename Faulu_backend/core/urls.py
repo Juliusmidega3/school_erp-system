@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from . import views  
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import (
     StudentViewSet,
@@ -24,4 +25,5 @@ urlpatterns = [
     path('fees/structure/by-term/', fee_structure_by_term, name='fee-structure-by-term'),
     path('classes/', class_list, name='class-list'),  # ✅ NEW
     path('', include(router.urls)),
+    path('student-login/', views.student_login),
 ]

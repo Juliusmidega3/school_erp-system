@@ -26,10 +26,13 @@ function WelcomePage() {
             Admin Portal
           </Link>
 
-          <div className="flex items-center gap-3 px-6 py-4 bg-green-100 text-green-400 rounded-xl font-medium shadow-inner cursor-not-allowed">
+          <Link
+            to="/student-login"
+            className="flex items-center gap-3 px-6 py-4 bg-green-600 text-white rounded-xl font-semibold shadow-md hover:bg-green-700 hover:scale-[1.02] transition-all duration-200"
+          >
             <GraduationCap className="w-6 h-6" />
-            Student Portal (coming soon)
-          </div>
+            Student Portal
+          </Link>
 
           <div className="flex items-center gap-3 px-6 py-4 bg-green-100 text-green-400 rounded-xl font-medium shadow-inner cursor-not-allowed">
             <BookOpen className="w-6 h-6" />

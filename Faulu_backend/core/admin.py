@@ -22,16 +22,17 @@ class StaffAdmin(admin.ModelAdmin):
 @admin.register(FeeStructure)
 class FeeStructureAdmin(admin.ModelAdmin):
     list_display = (
-        'class_name', 'term',
+        'enrolled_class', 'term',
         'tuition', 'lunch', 'transport',
         'activity', 'development',
         'total_fee'
     )
-    search_fields = ('class_name',)
-    list_filter = ('class_name', 'term')
+    search_fields = ('enrolled_class',)
+    list_filter = ('enrolled_class', 'term')
 
     @admin.display(description='Total Fee (Ksh)')
     def total_fee(self, obj):
         return (
             obj.tuition + obj.lunch + obj.transport + obj.activity + obj.development
         )
+
